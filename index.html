@@ -46,12 +46,11 @@
   --curva:      cubic-bezier(.22,.61,.36,1);
 
   /* — GEOMETRÍA DEL SOBRE (proporciones reales de tus PNG) — */
-  --sobre-w:    min(86vw, 520px, 58vh * 1.327);  /* ancho del sobre */
+  --sobre-w:    min(72vw, 420px, 46vh * 1.327);  /* ancho del sobre */
   --flap-h:     57.9%;   /* alto de la solapa respecto al alto del sobre */
-  --sello-w:    20%;     /* ancho del sello respecto al ancho del sobre */
-  --sello-y:    50%;     /* centro vertical del sello dentro del sobre */
-  --carta-w:    88%;     /* ancho de la carta que sale */
-  --carta-sube: 64%;     /* cuánto sube la carta al salir */
+  --sello-w:    19%;     /* ancho del sello respecto al ancho del sobre */
+  --sello-y:    51%;     /* centro vertical del sello dentro del sobre */
+  --carta-w:    86%;     /* ancho de la carta que sale */
 
   /* — GEOMETRÍA DEL INICIO — */
   --col-w:      clamp(112px, 26vw, 250px);
@@ -86,83 +85,131 @@ p{margin:0 0 1.1rem}
 
 /* ==========================================================================
    00 · ESCENA DEL SOBRE
+   La luz entra de arriba-izquierda: toda sombra cae abajo-derecha.
+   --p (0 a 1) es el progreso de apertura. Lo mueve el dedo, la rueda o el clic.
    ========================================================================== */
 #escena-sobre{
+  --p:0;
   position:fixed;inset:0;z-index:70;overflow:hidden;background:var(--papel-2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom));
-  transition:opacity .9s ease,visibility .9s;
-  touch-action:none;
+  gap:clamp(.45rem,2vh,1.3rem);
+  padding:calc(.8rem + env(safe-area-inset-top)) 1rem calc(.8rem + env(safe-area-inset-bottom));
+  touch-action:none;cursor:pointer;
+  transition:opacity 1s ease,visibility 1s,transform 1.5s cubic-bezier(.5,0,.2,1);
 }
 #escena-sobre.fuera{opacity:0;visibility:hidden}
+#escena-sobre.saliendo{transform:scale(1.08)}
 .fondo-sobre{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.deco{position:absolute;pointer-events:none;z-index:1}
-.deco-flores-1{top:-4%;left:-12%;width:min(58vw,360px);transform:rotate(-8deg);opacity:.95;
-  filter:drop-shadow(0 14px 22px rgba(80,70,50,.18))}
-.deco-flores-2{bottom:-6%;right:-12%;width:min(52vw,330px);transform:rotate(172deg);opacity:.9;
-  filter:drop-shadow(0 14px 22px rgba(80,70,50,.16))}
-.deco-tela{bottom:-2%;left:-6%;width:min(70vw,420px);opacity:.85}
 
-.sobre-cabeza{position:relative;z-index:3;text-align:center;margin-bottom:clamp(1rem,3.5vh,2rem)}
-.sobre-cabeza img{width:clamp(56px,13vw,86px);margin:0 auto .9rem;
-  filter:drop-shadow(0 4px 10px rgba(80,70,50,.18))}
-.para-rotulo{font-family:"Marcellus",serif;font-size:calc(var(--fs-label) - .04rem);
-  letter-spacing:.42em;text-transform:uppercase;color:var(--laton-2);margin:0}
-.para-nombre{font-style:italic;font-size:clamp(1.05rem,3.8vw,1.35rem);color:var(--tinta);margin:.35rem 0 0}
+/* Viñeteado: el papel perfectamente parejo es lo que se siente digital */
+.vineta{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 120% 92% at 38% 28%,
+    rgba(255,252,246,.34),rgba(255,252,246,0) 46%,rgba(104,84,56,.22) 100%)}
+
+/* Sombra de follaje: el mismo PNG, en negro y desenfocado */
+.sombra-hoja{position:absolute;z-index:1;pointer-events:none;
+  filter:brightness(0) blur(17px);opacity:.15;mix-blend-mode:multiply}
+.sh-1{top:0%;left:10%;width:min(74vw,460px);transform:rotate(24deg)}
+.sh-2{bottom:4%;right:-4%;width:min(56vw,350px);transform:rotate(-146deg)}
+
+/* Ramas y tela, cada una con su propia sombra proyectada */
+.deco{position:absolute;pointer-events:none;z-index:2}
+.rama-1{top:-6%;left:-15%;width:min(56vw,340px);transform:rotate(-6deg);
+  filter:drop-shadow(11px 17px 15px rgba(92,74,48,.30))}
+.rama-2{bottom:-9%;right:-17%;width:min(43vw,262px);transform:rotate(163deg);
+  filter:drop-shadow(-9px -15px 13px rgba(92,74,48,.26))}
+.tela{position:absolute;z-index:2;pointer-events:none;
+  bottom:-14%;left:-20%;width:min(80vw,480px);transform:rotate(-7deg);opacity:.92;
+  -webkit-mask-image:radial-gradient(ellipse 68% 72% at 42% 44%,#000 40%,transparent 86%);
+  mask-image:radial-gradient(ellipse 68% 72% at 42% 44%,#000 40%,transparent 86%)}
+
+/* Cabecera */
+.cabeza{position:relative;z-index:4;text-align:center;transition:opacity .7s ease}
+.cabeza .icono{width:clamp(72px,18vw,120px);margin:0 auto clamp(.5rem,1.6vh,1rem);
+  filter:drop-shadow(0 7px 11px rgba(92,74,48,.22))}
+.cabeza .nombres{font-family:"Marcellus",serif;margin:0;color:var(--tinta);
+  font-size:clamp(.8rem,3.3vw,1.12rem);letter-spacing:.32em;text-transform:uppercase}
+.cabeza .raya{width:44px;height:1px;background:rgba(110,122,94,.6);margin:.8rem auto}
+.cabeza .dia{font-family:"Marcellus",serif;margin:0;color:var(--tinta-70);
+  font-size:clamp(.7rem,2.6vw,.9rem);letter-spacing:.24em}
+.cabeza .sub{font-style:italic;margin:.25rem 0 0;color:var(--laton-2);
+  font-size:clamp(.86rem,2.9vw,1rem)}
+.para-rotulo{font-family:"Marcellus",serif;margin:1rem 0 0;color:var(--oliva);
+  font-size:calc(var(--fs-label) - .04rem);letter-spacing:.42em;text-transform:uppercase}
+.para-nombre{font-style:italic;margin:.25rem 0 0;color:var(--tinta);
+  font-size:clamp(1rem,3.6vw,1.25rem)}
 
 /* — El objeto sobre — */
-.sobre{
-  position:relative;z-index:3;width:var(--sobre-w);aspect-ratio:1335/1006;
-  perspective:1400px;perspective-origin:50% 0%;
-  filter:drop-shadow(0 26px 40px rgba(70,60,40,.28)) drop-shadow(0 6px 10px rgba(70,60,40,.16));
-}
-.sobre .env-back,.sobre .env-front{position:absolute;left:50%;transform:translateX(-50%);width:100%}
-.sobre .env-back{bottom:0;z-index:1}
-.carta{
-  position:absolute;left:50%;bottom:4%;width:var(--carta-w);height:96%;
-  transform:translateX(-50%) translateY(0);z-index:2;
-  background:var(--papel) center/cover no-repeat;
-  box-shadow:0 -6px 16px rgba(70,60,40,.14);
-  display:grid;place-items:center;
-  transition:transform 1.25s var(--curva);
-}
-.carta img{position:static;transform:none;width:38%;opacity:.55;margin-bottom:22%}
-.sobre .env-front{bottom:0;z-index:3}
-.sobre .env-flap{
-  position:absolute;left:50%;top:0;z-index:4;height:var(--flap-h);width:100%;object-fit:fill;
-  transform-origin:50% 0%;
-  transform:translateX(-50%) rotateX(0deg);
-  transition:transform 1.15s cubic-bezier(.62,.02,.28,1), z-index 0s linear .5s;
-  backface-visibility:hidden;
-}
-.sobre .sello{
-  position:absolute;left:50%;top:var(--sello-y);z-index:5;
-  width:var(--sello-w);height:auto;transform:translate(-50%,-50%);
-  cursor:grab;touch-action:none;
-  filter:drop-shadow(0 6px 12px rgba(70,50,20,.42));
-  transition:transform .5s var(--curva),opacity .5s ease;
-}
-.sobre .sello:active{cursor:grabbing}
-.sobre .sello.pulso{animation:pulso 2.6s ease-in-out infinite}
-@keyframes pulso{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.07)}}
+.sobre{position:relative;z-index:4;width:var(--sobre-w);aspect-ratio:1335/1006;
+  perspective:1500px;perspective-origin:50% 0%}
+.sobre::before{content:"";position:absolute;left:4%;right:4%;top:14%;bottom:1%;
+  background:var(--papel-2);z-index:0}
 
-/* Estados de la apertura */
-#escena-sobre.abriendo .sello{transform:translate(-50%,-165%) scale(.85) rotate(-14deg);opacity:0;animation:none}
-#escena-sobre.abriendo .env-flap{transform:translateX(-50%) rotateX(-172deg);z-index:0}
-#escena-sobre.saliendo .carta{transform:translateX(-50%) translateY(calc(-1 * var(--carta-sube)))}
-#escena-sobre.creciendo .carta{
-  transform:translateX(-50%) translateY(calc(-1 * var(--carta-sube))) scale(14);
-  transition:transform 1.5s cubic-bezier(.6,.02,.3,1);
+.sobre .carta{
+  position:absolute;left:50%;bottom:5%;width:var(--carta-w);height:94%;z-index:1;
+  transform:translateX(-50%) translateY(calc(var(--p) * -7%));
+  background:var(--papel) center/cover no-repeat;overflow:hidden;
+  box-shadow:0 -4px 14px rgba(70,60,40,.16);
+  display:flex;flex-direction:column;align-items:center;gap:.35rem;padding:8% 6% 0;
 }
-#escena-sobre.creciendo .carta img{opacity:0;transition:opacity .4s ease}
+.sobre .carta::after{content:"";position:absolute;inset:4.5%;border:1px solid rgba(176,141,87,.45)}
+.carta .c-icono{width:21%;opacity:.92;margin-bottom:.2rem}
+.carta .c-nom{font-family:"Marcellus",serif;margin:0;color:var(--tinta-70);
+  font-size:clamp(.42rem,1.5vw,.66rem);letter-spacing:.26em;text-transform:uppercase}
+.carta .c-fecha{font-family:"Marcellus",serif;margin:0;color:var(--laton-2);
+  font-size:clamp(.38rem,1.2vw,.56rem);letter-spacing:.22em}
 
-.llamada{position:relative;z-index:3;text-align:center;margin-top:clamp(1.2rem,4vh,2.4rem);
-  transition:opacity .5s ease}
-#escena-sobre.abriendo .llamada{opacity:0}
-.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;
-  font-size:clamp(.78rem,3vw,1rem);letter-spacing:.3em;text-transform:uppercase;color:var(--tinta)}
-.llamada .flecha{margin:.7rem auto 0;color:var(--laton-2);animation:subir 2.4s ease-in-out infinite}
-@keyframes subir{0%,100%{transform:translateY(4px);opacity:.5}50%{transform:translateY(-4px);opacity:1}}
+.sobre .env-front{position:absolute;left:50%;bottom:0;width:100%;z-index:2;
+  transform:translateX(-50%);
+  filter:drop-shadow(2px 5px 6px rgba(84,66,42,.34)) drop-shadow(13px 27px 34px rgba(84,66,42,.22))}
+
+/* Luz direccional recortada con la silueta exacta del sobre */
+.luz-sobre{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(142deg,
+    rgba(255,253,247,.52) 0%,rgba(255,253,247,0) 34%,
+    rgba(118,94,60,.09) 66%,rgba(118,94,60,.21) 100%);
+  -webkit-mask-image:url("assets/img/envelope_front.png");
+  mask-image:url("assets/img/envelope_front.png");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+
+.sobre .env-flap{position:absolute;left:50%;top:0;width:100%;height:var(--flap-h);
+  object-fit:fill;z-index:4;transform-origin:50% 0%;
+  transform:translateX(-50%) rotateX(calc(var(--p) * -174deg));
+  filter:drop-shadow(3px 8px 8px rgba(84,66,42,.32))}
+
+.sobre .sello{position:absolute;left:50%;top:var(--sello-y);width:var(--sello-w);z-index:5;
+  height:auto;transform:translate(-50%,-50%) scale(calc(1 - var(--p) * .14));
+  opacity:calc(1 - var(--p) * 4);
+  filter:drop-shadow(2px 5px 6px rgba(70,50,20,.48))}
+
+/* Salida: la carta se va por arriba y el sobre se desvanece */
+#escena-sobre.saliendo .carta{
+  transform:translateX(-50%) translateY(-126%) scale(1.04);
+  transition:transform 1.35s cubic-bezier(.5,0,.2,1)}
+#escena-sobre.saliendo .env-front,
+#escena-sobre.saliendo .env-flap,
+#escena-sobre.saliendo .luz-sobre,
+#escena-sobre.saliendo .sello,
+#escena-sobre.saliendo .sobre::before{opacity:0;transition:opacity .8s ease .2s}
+#escena-sobre.saliendo .cabeza,
+#escena-sobre.saliendo .llamada,
+#escena-sobre.saliendo .pie,
+#escena-sobre.saliendo .deco,
+#escena-sobre.saliendo .tela,
+#escena-sobre.saliendo .sombra-hoja{opacity:0;transition:opacity .7s ease}
+
+.llamada{position:relative;z-index:4;text-align:center;transition:opacity .7s ease}
+.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:var(--tinta-70);
+  font-size:clamp(.68rem,2.7vw,.88rem);letter-spacing:.34em;text-transform:uppercase}
+.llamada .flecha{margin:.6rem auto 0;color:var(--laton-2);animation:subir 2.4s ease-in-out infinite}
+@keyframes subir{0%,100%{transform:translateY(4px);opacity:.45}50%{transform:translateY(-4px);opacity:1}}
+
+.pie{position:relative;z-index:4;text-align:center;transition:opacity .7s ease}
+.pie img{width:36px;margin:0 auto .45rem;opacity:.45}
+.pie p{margin:0;font-style:italic;line-height:1.6;color:var(--tinta-45);
+  font-size:clamp(.76rem,2.5vw,.9rem)}
+@media (max-height:720px){.pie{display:none}}
 
 /* ==========================================================================
    BARRA Y MENÚ LATERAL
@@ -371,10 +418,11 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
    HORIZONTAL / PANTALLAS BAJAS
    ========================================================================== */
 @media (orientation:landscape) and (max-height:560px){
-  :root{--sobre-w:min(58vw,440px,60vh * 1.327);--col-w:clamp(120px,22vw,240px)}
-  .sobre-cabeza img{width:clamp(40px,7vh,60px);margin-bottom:.5rem}
-  .sobre-cabeza{margin-bottom:.7rem}
-  .llamada{margin-top:.8rem}
+  :root{--sobre-w:min(46vw,360px,44vh * 1.327);--col-w:clamp(110px,20vw,230px)}
+  #escena-sobre{gap:.4rem}
+  .cabeza .icono{width:clamp(38px,7vh,58px);margin-bottom:.35rem}
+  .cabeza .raya{margin:.45rem auto}
+  .pie{display:none}
   #inicio{min-height:100dvh;padding-top:4.5rem}
   .logo-novios{width:min(46vw,300px);margin:.6rem auto .9rem}
   .lema{margin-top:.8rem}
@@ -390,31 +438,45 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 <body class="sin-scroll">
 
 <!-- ============================ 00 · SOBRE ============================ -->
-<div id="escena-sobre">
+<div id="escena-sobre" role="button" tabindex="0" aria-label="Abrir la invitación">
   <img class="fondo-sobre" src="assets/img/bg_envelope.png" alt="">
-  <img class="deco deco-flores-1" src="assets/img/flowers_envelope.png" alt="">
-  <img class="deco deco-flores-2" src="assets/img/flowers_envelope.png" alt="">
-  <img class="deco deco-tela" src="assets/img/fabric_envelope.png" alt="">
+  <div class="vineta"></div>
+  <img class="sombra-hoja sh-1" src="assets/img/leaves.png" alt="" aria-hidden="true">
+  <img class="sombra-hoja sh-2" src="assets/img/leaves.png" alt="" aria-hidden="true">
+  <img class="deco rama-1" src="assets/img/flowers_envelope.png" alt="">
+  <img class="deco rama-2" src="assets/img/flowers_envelope.png" alt="">
+  <img class="tela" src="assets/img/fabric_envelope.png" alt="">
 
-  <div class="sobre-cabeza">
-    <img src="assets/img/icon.png" alt="V&amp;M">
+  <div class="cabeza">
+    <img class="icono" src="assets/img/icon.png" alt="V&amp;M">
+    <p class="nombres">Vanessa &amp; Manuel</p>
+    <div class="raya"></div>
+    <p class="dia">14 . 11 . 2026</p>
+    <p class="sub">Nuestro mejor capítulo</p>
     <p class="para-rotulo" id="para-rotulo" hidden>Para</p>
     <p class="para-nombre" id="para-nombre" hidden></p>
   </div>
 
   <div class="sobre" id="sobre">
-    <img class="env-back" src="assets/img/envelope_back.png" alt="">
-    <div class="carta" id="carta" style="background-image:url('assets/img/bg_main.png')">
-      <img src="assets/img/icon.png" alt="">
+    <div class="carta" id="carta" style="background-image:url('assets/img/menu_bg.png')">
+      <img class="c-icono" src="assets/img/icon.png" alt="">
+      <p class="c-nom">Vanessa &amp; Manuel</p>
+      <p class="c-fecha">14 · XI · 2026</p>
     </div>
     <img class="env-front" src="assets/img/envelope_front.png" alt="">
+    <div class="luz-sobre"></div>
     <img class="env-flap" src="assets/img/envelope_flap.png" alt="">
-    <img class="sello" id="sello" src="assets/img/seal.png" alt="Abrir la invitación" role="button" tabindex="0">
+    <img class="sello" src="assets/img/seal.png" alt="">
   </div>
 
   <div class="llamada">
     <b>Desliza para abrir</b>
     <svg class="flecha" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
+  </div>
+
+  <div class="pie">
+    <img src="assets/img/leaves.png" alt="">
+    <p>Hay amores que no solo se viven,<br>se recuerdan para siempre.</p>
   </div>
 </div>
 
@@ -629,7 +691,6 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 "use strict";
 
 var escena  = document.getElementById("escena-sobre"),
-    sello   = document.getElementById("sello"),
     audio   = document.getElementById("pista"),
     cuerpo  = document.body,
     abierto = false;
@@ -649,76 +710,122 @@ if (pases){
   for (var i=0;i<sel.options.length;i++) if (sel.options[i].text===pases) sel.selectedIndex=i;
 }
 
-/* ---------- Apertura del sobre, por etapas ---------- */
-var t = [];
+/* ---------- Apertura del sobre ----------------------------------------
+   Un solo modelo: la variable --p (0 a 1). La mueven el dedo, la rueda
+   del mouse, el clic o el teclado. Nada de secuencias enlatadas.
+   --------------------------------------------------------------------- */
+var t = [], p = 0, p0 = 0, raf = null;
+var lento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function limpiar(){ t.forEach(clearTimeout); t = []; }
+function setP(v){
+  p = v < 0 ? 0 : (v > 1 ? 1 : v);
+  escena.style.setProperty("--p", p.toFixed(4));
+}
+function animarP(destino, ms, luego){
+  cancelAnimationFrame(raf);
+  if (lento){ setP(destino); if (luego) luego(); return; }
+  var ini = p, t0 = null;
+  function paso(ahora){
+    if (t0 === null) t0 = ahora;
+    var k = Math.min(1,(ahora - t0)/ms), e = 1 - Math.pow(1-k,3);
+    setP(ini + (destino-ini)*e);
+    if (k < 1) raf = requestAnimationFrame(paso); else if (luego) luego();
+  }
+  raf = requestAnimationFrame(paso);
+}
+
+function sonar(){
+  if (!audio.getAttribute("src")) return;
+  audio.volume = 0;
+  audio.play().then(function(){
+    var v=0, f=setInterval(function(){ v+=.03; audio.volume=Math.min(v,.42); if(v>=.42) clearInterval(f); },90);
+    marcarMusica(true);
+  }).catch(function(){});
+}
 
 function abrir(){
   if (abierto) return;
-  abierto = true; limpiar();
-  sello.classList.remove("pulso");
-  escena.classList.add("abriendo");                                             /* se rompe el sello, gira la solapa */
-  t.push(setTimeout(function(){ escena.classList.add("saliendo");  },  850));   /* sale la carta */
-  t.push(setTimeout(function(){ escena.classList.add("creciendo"); }, 1900));   /* la carta crece */
-  t.push(setTimeout(function(){
-    escena.classList.add("fuera");
-    cuerpo.classList.remove("sin-scroll");
-    cuerpo.classList.add("dentro");
-    window.scrollTo(0,0);
-  }, 2900));
-  if (audio.getAttribute("src")){
-    audio.volume = 0;
-    audio.play().then(function(){
-      var v=0, f=setInterval(function(){ v+=.03; audio.volume=Math.min(v,.42); if(v>=.42) clearInterval(f); },90);
-      marcarMusica(true);
-    }).catch(function(){});
-  }
+  abierto = true; limpiar(); clearTimeout(relojOcio); clearTimeout(relojRueda);
+  animarP(1, 900, function(){
+    escena.classList.add("saliendo");
+    t.push(setTimeout(function(){
+      escena.classList.add("fuera");
+      cuerpo.classList.remove("sin-scroll");
+      cuerpo.classList.add("dentro");
+      window.scrollTo(0,0);
+    }, 1250));
+  });
+  sonar();
 }
 
 function cerrar(){
   if (!abierto) return;
-  limpiar();
-  window.scrollTo(0,0);
+  limpiar(); window.scrollTo(0,0);
   escena.classList.remove("fuera");
   cuerpo.classList.add("sin-scroll");
   cuerpo.classList.remove("dentro");
-  t.push(setTimeout(function(){ escena.classList.remove("creciendo"); },   60));
-  t.push(setTimeout(function(){ escena.classList.remove("saliendo");  },  900));
-  t.push(setTimeout(function(){ escena.classList.remove("abriendo");  abierto=false; ocioso(); }, 1700));
+  t.push(setTimeout(function(){ escena.classList.remove("saliendo"); }, 80));
+  t.push(setTimeout(function(){
+    animarP(0, 950, function(){ abierto = false; ocioso(); });
+  }, 950));
 }
 
-/* Arrastre del sello, con vista previa en vivo */
-var x0=0,y0=0,drag=false,razon=0;
-sello.addEventListener("pointerdown", function(e){
+/* — Dedo: la solapa sigue el arrastre — */
+var y0=0, x0=0, arrastrando=false, movido=0;
+escena.addEventListener("pointerdown", function(e){
   if (abierto) return;
-  drag=true; razon=0; x0=e.clientX; y0=e.clientY;
-  try{ sello.setPointerCapture(e.pointerId); }catch(err){}
+  arrastrando = true; movido = 0; x0 = e.clientX; y0 = e.clientY; p0 = p;
+  cancelAnimationFrame(raf); clearTimeout(relojOcio);
 });
-sello.addEventListener("pointermove", function(e){
-  if (!drag||abierto) return;
-  var d = Math.hypot(e.clientX-x0, e.clientY-y0);
-  razon = Math.min(d/150,1);
-  sello.style.transform = "translate(-50%,calc(-50% - "+(razon*34)+"px)) scale("+(1-razon*.12)+") rotate("+(-razon*10)+"deg)";
-  sello.style.opacity = 1-razon*.35;
-  if (razon>=1){ drag=false; sello.style.cssText=""; abrir(); }
+escena.addEventListener("pointermove", function(e){
+  if (!arrastrando || abierto) return;
+  var dx = e.clientX - x0, dy = e.clientY - y0;
+  movido = Math.sqrt(dx*dx + dy*dy);
+  setP(p0 + (-dy)/220);
+  if (p >= 1){ arrastrando = false; abrir(); }
 });
 function soltar(){
-  if (!drag||abierto) return;
-  drag=false;
-  var r = razon; sello.style.cssText = "";
-  if (r > .22) abrir();
+  if (!arrastrando || abierto) return;
+  arrastrando = false;
+  if (p > .2) abrir(); else { animarP(0, 420); ocioso(); }
 }
-sello.addEventListener("pointerup", soltar);
-sello.addEventListener("pointercancel", soltar);
-sello.addEventListener("click", function(){ if(!abierto) abrir(); });
-sello.addEventListener("keydown", function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); abrir(); } });
-escena.addEventListener("click", function(e){ if(!abierto && e.target===escena) abrir(); });
+escena.addEventListener("pointerup", soltar);
+escena.addEventListener("pointercancel", soltar);
 
-/* Si nadie se mueve en 6 s, el sello late para pedir que lo abran */
+/* — Clic: el camino seguro, sobre todo en computadora — */
+escena.addEventListener("click", function(){ if (!abierto && movido < 8) abrir(); });
+escena.addEventListener("keydown", function(e){
+  if (e.key === "Enter" || e.key === " "){ e.preventDefault(); abrir(); }
+});
+
+/* — Rueda del mouse: el equivalente del dedo en escritorio — */
+var relojRueda;
+escena.addEventListener("wheel", function(e){
+  if (abierto) return;
+  e.preventDefault();
+  clearTimeout(relojOcio);
+  cancelAnimationFrame(raf);
+  setP(p + Math.abs(e.deltaY)/700);
+  if (p >= .5){ abrir(); return; }
+  clearTimeout(relojRueda);
+  relojRueda = setTimeout(function(){ if (!abierto && p < .5){ animarP(0,600); ocioso(); } }, 420);
+}, {passive:false});
+
+/* — Cursor encima: la solapa se asoma como invitación — */
+if (window.matchMedia("(hover:hover)").matches){
+  var sobreEl = document.getElementById("sobre");
+  sobreEl.addEventListener("mouseenter", function(){ if (!abierto && p < .09) animarP(.09, 400); });
+  sobreEl.addEventListener("mouseleave", function(){ if (!abierto && p <= .14) animarP(0, 400); });
+}
+
+/* — A los 6 s sin actividad, la solapa cabecea para enseñar el gesto — */
 var relojOcio;
 function ocioso(){
   clearTimeout(relojOcio);
-  relojOcio = setTimeout(function(){ if(!abierto) sello.classList.add("pulso"); }, 6000);
+  relojOcio = setTimeout(function(){
+    if (abierto || arrastrando) return;
+    animarP(.12, 600, function(){ animarP(0, 700, ocioso); });
+  }, 6000);
 }
 ocioso();
 
