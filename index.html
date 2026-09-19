@@ -86,150 +86,167 @@ p{margin:0 0 1.1rem}
 /* ==========================================================================
    00 · ESCENA DEL SOBRE
    --------------------------------------------------------------------------
-   ESCENARIO DE PROPORCIÓN FIJA: --E es el ancho de un cartel invisible
-   centrado en pantalla. TODO se mide en % de ese cartel, nunca en % de la
-   ventana. Así la composición es idéntica en celular, tablet y escritorio.
-   --p (0 a 1) es el progreso de apertura; lo mueve el dedo sobre el sobre.
+   DOS SISTEMAS DE COORDENADAS:
+   · Los adornos se anclan a las ESQUINAS DE LA VENTANA y se miden en vmin.
+   · El contenido vive en un CARTEL centrado (--E) de proporción fija.
+   RECETA DE REALISMO, en todo objeto: sombra de contacto (corta y oscura) +
+   sombra ambiental (amplia y suave) + luz direccional recortada con su
+   silueta. La luz entra de arriba-izquierda, toda sombra cae abajo-derecha.
+   --p (0 a 1) es el progreso de apertura.
    ========================================================================== */
 #escena-sobre{
   --p:0;
-  --E:min(100vw, 100svh * .72);        /* ancho del cartel */
-  --ratio:.72;                          /* proporción del cartel */
+  --E:min(88vw, 100svh * .72, 640px);   /* ancho del cartel */
+  --ratio:.78;
   position:fixed;inset:0;z-index:70;overflow:hidden;background:var(--papel-2);
   display:grid;place-items:center;
-  transform-origin:50% 32%;
-  transition:opacity 1.1s ease,visibility 1.1s,transform 1.5s cubic-bezier(.5,0,.35,1);
+  transition:opacity .9s ease,visibility .9s;
 }
 #escena-sobre.fuera{opacity:0;visibility:hidden}
 .fondo-sobre{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 
-/* Luz de atardecer: cálida por arriba-izquierda, tierra por abajo-derecha */
+/* Luz de atardecer */
 .calido{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:soft-light;
-  background:linear-gradient(141deg,
-    rgba(255,204,132,.85) 0%,rgba(255,206,146,.42) 26%,
-    rgba(255,214,170,0) 52%,rgba(92,54,18,.30) 100%)}
+  background:linear-gradient(139deg,
+    rgba(255,199,120,1) 0%,rgba(255,206,146,.58) 24%,
+    rgba(255,214,170,0) 50%,rgba(84,46,12,.38) 100%)}
 .vineta{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;
-  background:radial-gradient(ellipse 118% 92% at 34% 24%,
-    rgba(255,255,255,0) 34%,rgba(126,92,52,.16) 72%,rgba(104,68,34,.40) 100%)}
+  background:radial-gradient(ellipse 116% 90% at 32% 22%,
+    rgba(255,255,255,0) 30%,rgba(126,90,48,.20) 68%,rgba(96,60,26,.48) 100%)}
+
+/* ---------- Adornos anclados a las esquinas de la ventana ---------- */
+.esq{position:absolute;z-index:2;pointer-events:none;
+  transition:transform 1.1s cubic-bezier(.4,0,.5,1),opacity .9s ease}
+.esq-tl{top:0;left:0;width:clamp(148px,37vmin,440px);
+  filter:drop-shadow(.7vmin .9vmin .9vmin rgba(88,58,26,.42))
+         drop-shadow(2.6vmin 3.4vmin 3.4vmin rgba(88,58,26,.24))}
+.esq-br{bottom:0;right:0;width:clamp(148px,36vmin,430px);
+  filter:drop-shadow(.7vmin .9vmin .9vmin rgba(88,58,26,.38))
+         drop-shadow(2.6vmin 3.4vmin 3.4vmin rgba(88,58,26,.22))}
+.esq-bl{bottom:0;left:0;width:clamp(180px,44vmin,520px);opacity:.96;
+  filter:drop-shadow(.6vmin .8vmin 1.1vmin rgba(88,58,26,.26))
+         drop-shadow(2.2vmin 2.8vmin 3.2vmin rgba(88,58,26,.16))}
 
 /* ---------- El cartel ---------- */
-.escenario{position:relative;z-index:2;
+.escenario{position:relative;z-index:3;
   width:var(--E);height:calc(var(--E) / var(--ratio));
-  transition:opacity .8s ease}
+  transform-origin:50% 57%;
+  transition:transform 1.55s cubic-bezier(.55,.02,.86,.3),opacity .8s ease}
 
-/* Sombras de follaje: tu PNG en negro, alargado como al atardecer */
-.sombra-hoja{position:absolute;pointer-events:none;z-index:1;
-  filter:brightness(0) blur(15px);opacity:.22;mix-blend-mode:multiply}
-.sh-1{top:1%;left:9%;width:62%;transform:rotate(23deg) scaleY(1.2)}
-.sh-2{bottom:9%;right:-6%;width:48%;transform:rotate(-148deg) scaleY(1.15)}
-
-/* Ramas y tela, ancladas al cartel */
-.deco{position:absolute;pointer-events:none;z-index:2}
-.rama-1{top:-5%;left:-17%;width:56%;transform:rotate(-6deg);
-  filter:drop-shadow(14px 20px 16px rgba(88,62,32,.34))}
-.rama-2{bottom:-4%;right:-19%;width:45%;transform:rotate(163deg);
-  filter:drop-shadow(-11px -17px 14px rgba(88,62,32,.30))}
-.tela{position:absolute;z-index:2;pointer-events:none;
-  bottom:-7%;left:-15%;width:62%;transform:rotate(-8deg);opacity:.95;
-  -webkit-mask-image:radial-gradient(ellipse 66% 70% at 44% 46%,#000 38%,transparent 84%);
-  mask-image:radial-gradient(ellipse 66% 70% at 44% 46%,#000 38%,transparent 84%)}
-
-/* Cabecera: solo icono y fecha */
-.cabeza{position:absolute;left:0;right:0;top:9%;z-index:4;text-align:center;
+/* Cabecera: icono y una sola frase */
+.cabeza{position:absolute;left:0;right:0;top:2%;z-index:4;text-align:center;
   transition:opacity .7s ease}
-.cabeza .icono{width:23%;margin:0 auto calc(var(--E) * .028);
-  filter:drop-shadow(calc(var(--E)*.008) calc(var(--E)*.013) calc(var(--E)*.014) rgba(88,62,32,.30))}
-.cabeza .dia{font-family:"Marcellus",serif;margin:0;color:var(--tinta-70);
-  font-size:calc(var(--E) * .028);letter-spacing:.3em}
-.para-rotulo{font-family:"Marcellus",serif;margin:calc(var(--E)*.035) 0 0;color:var(--oliva);
-  font-size:calc(var(--E) * .019);letter-spacing:.42em;text-transform:uppercase}
+.cabeza .icono{width:31%;margin:0 auto calc(var(--E) * .03);
+  filter:drop-shadow(calc(var(--E)*.007) calc(var(--E)*.012) calc(var(--E)*.013) rgba(88,58,26,.34))}
+.cabeza .frase{margin:0;font-style:italic;color:var(--laton-2);
+  font-size:calc(var(--E) * .038);line-height:1.5}
+.para-rotulo{font-family:"Marcellus",serif;margin:calc(var(--E)*.032) 0 0;color:var(--oliva);
+  font-size:calc(var(--E) * .021);letter-spacing:.42em;text-transform:uppercase}
 .para-nombre{font-style:italic;margin:.3em 0 0;color:var(--tinta);
-  font-size:calc(var(--E) * .033)}
+  font-size:calc(var(--E) * .034)}
 
 /* ---------- El sobre ---------- */
-.sombra-piso{position:absolute;left:50%;top:52%;z-index:3;pointer-events:none;
-  width:80%;height:38%;transform:translate(-46%,-40%);
+.sombra-piso{position:absolute;left:50%;top:66%;z-index:3;pointer-events:none;
+  width:86%;height:40%;transform:translate(-45%,-40%);
   background:radial-gradient(ellipse 50% 50% at 50% 50%,
-    rgba(74,50,22,.46) 0%,rgba(74,50,22,.22) 46%,rgba(74,50,22,0) 72%);
-  filter:blur(calc(var(--E) * .035));
+    rgba(70,44,16,.52) 0%,rgba(70,44,16,.26) 44%,rgba(70,44,16,0) 72%);
+  filter:blur(calc(var(--E) * .038));
   transition:opacity .8s ease}
 
-.sobre{position:absolute;left:50%;top:52%;z-index:4;
-  width:78%;aspect-ratio:1335/1006;transform:translate(-50%,-50%);
-  perspective:calc(var(--E) * 2.6);perspective-origin:50% 0%;cursor:grab}
+.sobre{position:absolute;left:50%;top:64%;z-index:4;
+  width:88%;aspect-ratio:1335/1006;transform:translate(-50%,-50%);
+  perspective:calc(var(--E) * 2.4);perspective-origin:50% 42%;cursor:grab}
 .sobre:active{cursor:grabbing}
-/* Forro interior, recortado con la silueta real del sobre */
-.sobre::before{content:"";position:absolute;inset:0;z-index:0;background:#EFE6D5;
+/* Forro interior recortado con la silueta real */
+.sobre::before{content:"";position:absolute;inset:0;z-index:0;background:#E9DECA;
   -webkit-mask-image:url("assets/img/envelope_front.png");
   mask-image:url("assets/img/envelope_front.png");
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 
 .sobre .carta{
-  position:absolute;left:50%;bottom:4%;width:85%;height:87%;z-index:1;
-  transform:translateX(-50%) translateY(calc(var(--p) * -6%));
+  position:absolute;left:50%;bottom:4%;width:85%;height:88%;z-index:1;
+  transform:translateX(-50%);
   background:var(--papel) center/cover no-repeat;overflow:hidden;
-  box-shadow:0 calc(var(--E)*-.004) calc(var(--E)*.014) rgba(70,60,40,.18);
-  display:flex;flex-direction:column;align-items:center;gap:.3em;padding:8% 6% 0}
+  box-shadow:0 calc(var(--E)*-.005) calc(var(--E)*.016) rgba(62,42,14,.30);
+  display:flex;flex-direction:column;align-items:center;gap:.3em;padding:7% 6% 0}
 .sobre .carta::after{content:"";position:absolute;inset:4.5%;border:1px solid rgba(176,141,87,.45)}
-.carta .c-icono{width:20%;opacity:.92}
+.carta .c-icono{width:19%;opacity:.9}
 .carta .c-nom{font-family:"Marcellus",serif;margin:0;color:var(--tinta-70);
-  font-size:calc(var(--E) * .016);letter-spacing:.26em;text-transform:uppercase}
+  font-size:calc(var(--E) * .0155);letter-spacing:.26em;text-transform:uppercase}
 .carta .c-fecha{font-family:"Marcellus",serif;margin:0;color:var(--laton-2);
-  font-size:calc(var(--E) * .0132);letter-spacing:.22em}
+  font-size:calc(var(--E) * .013);letter-spacing:.22em}
 
 .sobre .env-front{position:absolute;left:0;bottom:0;width:100%;z-index:2;
-  filter:drop-shadow(calc(var(--E)*.003) calc(var(--E)*.007) calc(var(--E)*.008) rgba(84,60,30,.40))}
+  transition:opacity .7s ease;
+  filter:drop-shadow(calc(var(--E)*.003) calc(var(--E)*.007) calc(var(--E)*.007) rgba(74,48,18,.46))}
 
-/* Luz direccional recortada con la silueta exacta del sobre */
 .luz-sobre{position:absolute;inset:0;z-index:3;pointer-events:none;
-  background:linear-gradient(141deg,
-    rgba(255,240,208,.72) 0%,rgba(255,240,212,.18) 30%,
-    rgba(255,240,212,0) 46%,rgba(104,68,30,.14) 72%,rgba(104,68,30,.30) 100%);
+  background:linear-gradient(139deg,
+    rgba(255,238,200,.82) 0%,rgba(255,238,206,.22) 28%,
+    rgba(255,238,206,0) 46%,rgba(96,58,20,.16) 72%,rgba(96,58,20,.34) 100%);
   -webkit-mask-image:url("assets/img/envelope_front.png");
   mask-image:url("assets/img/envelope_front.png");
   -webkit-mask-size:100% 100%;mask-size:100% 100%;
   -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 
-/* Texto impreso en el cuerpo del sobre */
-.impreso{position:absolute;left:0;right:0;bottom:11%;z-index:4;margin:0;text-align:center;
-  pointer-events:none;color:rgba(64,72,56,.72);font-family:"Marcellus",serif;
-  font-size:calc(var(--E) * .0185);letter-spacing:.32em;text-transform:uppercase;
+/* La sombra que la solapa proyecta al levantarse: esto es lo que le dice
+   al ojo que sube hacia ti y no que se hunde */
+.sombra-solapa{position:absolute;inset:0;z-index:3;pointer-events:none;
+  transform-origin:50% 0%;
+  transform:scaleY(calc(.45 + var(--p) * .85));
+  opacity:calc(var(--p) * 1.35);
+  background:linear-gradient(180deg,
+    rgba(64,40,12,.52) 0%,rgba(64,40,12,.26) 44%,rgba(64,40,12,0) 76%);
+  -webkit-mask-image:url("assets/img/envelope_front.png");
+  mask-image:url("assets/img/envelope_front.png");
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+
+/* Texto impreso en el cuerpo */
+.impreso{position:absolute;left:0;right:0;bottom:10%;z-index:4;margin:0;text-align:center;
+  pointer-events:none;color:rgba(60,68,52,.78);font-family:"Marcellus",serif;
+  font-size:calc(var(--E) * .027);letter-spacing:.3em;text-transform:uppercase;
   opacity:calc((.30 - var(--p)) / .22)}
-.impreso .flecha{display:block;margin:.7em auto 0;color:rgba(142,110,63,.8);
+.impreso .flecha{display:block;margin:.6em auto 0;color:rgba(142,110,63,.85);
   animation:subir 2.4s ease-in-out infinite}
 @keyframes subir{0%,100%{transform:translateY(3px);opacity:.45}50%{transform:translateY(-3px);opacity:1}}
 
-/* La solapa: gira con su texto y su sello dentro */
+/* La solapa, con su texto, su fecha y su sello dentro */
 .solapa{position:absolute;left:0;top:0;width:100%;height:var(--flap-h);z-index:5;
-  transform-origin:50% 0%;transform:rotateX(calc(var(--p) * -174deg));
-  filter:drop-shadow(calc(var(--E)*.004) calc(var(--E)*.011) calc(var(--E)*.010) rgba(84,60,30,.36))}
+  transform-origin:50% 0%;
+  transform:translateZ(calc(var(--E) * .035 * var(--p))) rotateX(calc(var(--p) * -174deg));
+  filter:drop-shadow(calc(var(--E)*.004) calc(var(--E)*.012) calc(var(--E)*.011) rgba(74,48,18,.42))}
 .solapa .env-flap{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
-.texto-solapa{position:absolute;left:0;right:0;top:41%;margin:0;text-align:center;
-  color:rgba(96,78,48,.82);font-family:"Marcellus",serif;
-  font-size:calc(var(--E) * .0175);letter-spacing:.26em;text-transform:uppercase;
+.texto-solapa,.fecha-solapa{position:absolute;left:0;right:0;margin:0;text-align:center;
+  font-family:"Marcellus",serif;text-transform:uppercase;
   opacity:calc((.34 - var(--p)) / .19)}
-.solapa .sello{position:absolute;left:50%;top:88%;width:24.5%;height:auto;
+.texto-solapa{top:33%;color:rgba(96,78,48,.85);
+  font-size:calc(var(--E) * .021);letter-spacing:.26em}
+.fecha-solapa{top:57%;color:rgba(82,68,44,.9);
+  font-size:calc(var(--E) * .024);letter-spacing:.3em}
+.solapa .sello{position:absolute;left:50%;top:88%;width:25%;height:auto;
   transform:translate(-50%,-50%);
   opacity:calc((.34 - var(--p)) / .19);
-  filter:drop-shadow(calc(var(--E)*.003) calc(var(--E)*.007) calc(var(--E)*.008) rgba(70,46,14,.52))}
+  filter:drop-shadow(calc(var(--E)*.003) calc(var(--E)*.008) calc(var(--E)*.008) rgba(64,40,10,.58))}
 
-/* ---------- Salida ---------- */
-#escena-sobre.sale .carta{
-  transform:translateX(-50%) translateY(-112%);
-  transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
-#escena-sobre.sale .env-front,
-#escena-sobre.sale .luz-sobre,
-#escena-sobre.sale .solapa,
-#escena-sobre.sale .impreso{opacity:0;transition:opacity .85s ease .25s}
-#escena-sobre.sale .sobre::before,
-#escena-sobre.sale .sombra-piso,
-#escena-sobre.sale .cabeza,
-#escena-sobre.sale .deco,
-#escena-sobre.sale .tela,
-#escena-sobre.sale .sombra-hoja{opacity:0;transition:opacity .8s ease}
-#escena-sobre.zoom{transform:scale(1.72);opacity:0;
-  transition:transform 1.5s cubic-bezier(.5,0,.35,1),opacity 1.05s ease .4s}
+/* ---------- El portal: la cámara entra por la boca del sobre ---------- */
+.destello{position:absolute;inset:0;z-index:6;pointer-events:none;opacity:0;
+  background:radial-gradient(circle 46% at 50% 50%,
+    rgba(255,244,222,1) 0%,rgba(255,228,178,.92) 38%,
+    rgba(255,214,150,.55) 62%,rgba(255,210,150,0) 88%);
+  transform:scale(.22);
+  transition:opacity .85s ease,transform 1.3s cubic-bezier(.5,0,.4,1)}
+#escena-sobre.portal .destello{opacity:1;transform:scale(3.4)}
+#escena-sobre.portal .escenario{transform:scale(9.5)}
+#escena-sobre.portal .env-front,
+#escena-sobre.portal .luz-sobre,
+#escena-sobre.portal .sombra-solapa{opacity:0}
+#escena-sobre.portal .cabeza,
+#escena-sobre.portal .sombra-piso{opacity:0}
+#escena-sobre.portal .esq-tl{transform:translate(-46%,-46%);opacity:0}
+#escena-sobre.portal .esq-br{transform:translate(46%,46%);opacity:0}
+#escena-sobre.portal .esq-bl{transform:translate(-52%,42%);opacity:0}
 
 /* ==========================================================================
    BARRA Y MENÚ LATERAL
@@ -439,7 +456,7 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
    ========================================================================== */
 @media (orientation:landscape) and (max-height:560px){
   :root{--col-w:clamp(110px,20vw,230px)}
-  #escena-sobre{--E:min(100vw, 100svh * .86)}
+  #escena-sobre{--E:min(58vw, 100svh * .80, 560px)}
   #inicio{min-height:100dvh;padding-top:4.5rem}
   .logo-novios{width:min(46vw,300px);margin:.6rem auto .9rem}
   .lema{margin-top:.8rem}
@@ -460,16 +477,14 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
   <div class="calido"></div>
   <div class="vineta"></div>
 
-  <div class="escenario">
-    <img class="sombra-hoja sh-1" src="assets/img/leaves.png" alt="" aria-hidden="true">
-    <img class="sombra-hoja sh-2" src="assets/img/leaves.png" alt="" aria-hidden="true">
-    <img class="deco rama-1" src="assets/img/flowers_envelope.png" alt="">
-    <img class="deco rama-2" src="assets/img/flowers_envelope.png" alt="">
-    <img class="tela" src="assets/img/fabric_envelope.png" alt="">
+  <img class="esq esq-tl" src="assets/img/floral_top_left.png" alt="">
+  <img class="esq esq-br" src="assets/img/floral_bottom_right.png" alt="">
+  <img class="esq esq-bl" src="assets/img/fabric_bottom_left.png" alt="">
 
+  <div class="escenario">
     <div class="cabeza">
       <img class="icono" src="assets/img/icon.png" alt="V&amp;M">
-      <p class="dia">14 . 11 . 2026</p>
+      <p class="frase">Hay amores que no solo se viven,<br>se recuerdan para siempre.</p>
       <p class="para-rotulo" id="para-rotulo" hidden>Para</p>
       <p class="para-nombre" id="para-nombre" hidden></p>
     </div>
@@ -484,16 +499,20 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
       </div>
       <img class="env-front" src="assets/img/envelope_front.png" alt="">
       <div class="luz-sobre"></div>
+      <div class="sombra-solapa"></div>
       <p class="impreso">Desliza para abrir
-        <svg class="flecha" width="22" height="12" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
+        <svg class="flecha" width="26" height="14" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
       </p>
       <div class="solapa">
         <img class="env-flap" src="assets/img/envelope_flap.png" alt="">
         <p class="texto-solapa">Una nueva historia comienza</p>
+        <p class="fecha-solapa">14 . 11 . 2026</p>
         <img class="sello" src="assets/img/seal.png" alt="">
       </div>
     </div>
   </div>
+
+  <div class="destello"></div>
 </div>
 
 <!-- ============================ BARRA ============================ -->
@@ -727,7 +746,8 @@ if (pases){
 }
 
 /* ---------- Apertura del sobre ----------------------------------------
-   Solo el sobre abre: arrastrarlo, tocarlo o Enter. Nada más.
+   La solapa sigue el dedo (o el mouse con el botón apretado). Al llegar
+   arriba, la cámara entra por la boca del sobre hasta el destello dorado.
    --------------------------------------------------------------------- */
 var sobreEl = document.getElementById("sobre");
 var t = [], p = 0, p0 = 0, raf = null;
@@ -750,34 +770,38 @@ function animarP(destino, ms, luego){
   raf = requestAnimationFrame(paso);
 }
 
-/* Música: arranca desde cero al abrir, se detiene al volver al sobre */
+/* ---------- Música con desvanecido, sin reiniciar ---------- */
+var VOL = .42, fundido = null;
+function fundir(destino, ms, alFinal){
+  clearInterval(fundido);
+  var pasos = Math.max(1, Math.round(ms/50)), i = 0, ini = audio.volume;
+  fundido = setInterval(function(){
+    i++;
+    audio.volume = Math.max(0, Math.min(1, ini + (destino-ini) * (i/pasos)));
+    if (i >= pasos){ clearInterval(fundido); if (alFinal) alFinal(); }
+  }, 50);
+}
 function sonar(){
   if (!audio.getAttribute("src")) return;
-  try { audio.currentTime = 0; } catch(e){}
   audio.volume = 0;
-  audio.play().then(function(){
-    var v=0, f=setInterval(function(){ v+=.03; audio.volume=Math.min(v,.42); if(v>=.42) clearInterval(f); },90);
-    marcarMusica(true);
-  }).catch(function(){});
+  audio.play().then(function(){ fundir(VOL, 1200); marcarMusica(true); }).catch(function(){});
 }
 function callar(){
-  audio.pause();
-  try { audio.currentTime = 0; } catch(e){}
-  marcarMusica(false);
+  if (audio.paused) return;
+  fundir(0, 900, function(){ audio.pause(); marcarMusica(false); });
 }
 
 function abrir(){
   if (abierto) return;
   abierto = true; limpiar(); clearTimeout(relojOcio);
-  animarP(1, 820, function(){
-    escena.classList.add("sale");                                  /* la carta sale */
-    t.push(setTimeout(function(){ escena.classList.add("zoom"); }, 1150));  /* la cámara entra */
+  animarP(1, 780, function(){
+    t.push(setTimeout(function(){ escena.classList.add("portal"); }, 120));
     t.push(setTimeout(function(){
       escena.classList.add("fuera");
       cuerpo.classList.remove("sin-scroll");
       cuerpo.classList.add("dentro");
       window.scrollTo(0,0);
-    }, 2450));
+    }, 1900));
   });
   sonar();
 }
@@ -788,14 +812,13 @@ function cerrar(){
   escena.classList.remove("fuera");
   cuerpo.classList.add("sin-scroll");
   cuerpo.classList.remove("dentro");
-  t.push(setTimeout(function(){ escena.classList.remove("zoom"); }, 60));
-  t.push(setTimeout(function(){ escena.classList.remove("sale"); }, 700));
+  t.push(setTimeout(function(){ escena.classList.remove("portal"); }, 80));
   t.push(setTimeout(function(){
     animarP(0, 900, function(){ abierto = false; ocioso(); });
-  }, 1450));
+  }, 1100));
 }
 
-/* — Arrastrar el sobre: la solapa sigue el dedo — */
+/* — Arrastrar el sobre: funciona igual con dedo y con mouse — */
 var y0=0, x0=0, arrastrando=false, movido=0;
 sobreEl.addEventListener("pointerdown", function(e){
   if (abierto) return;
@@ -822,10 +845,16 @@ sobreEl.addEventListener("keydown", function(e){
   if (e.key === "Enter" || e.key === " "){ e.preventDefault(); abrir(); }
 });
 
-/* — Cursor encima: la solapa se asoma, con su sello — */
+/* — Cursor encima: la solapa se asoma. No se mete si estás arrastrando — */
 if (window.matchMedia("(hover:hover)").matches){
-  sobreEl.addEventListener("mouseenter", function(){ if (!abierto && p < .09) animarP(.09, 400); });
-  sobreEl.addEventListener("mouseleave", function(){ if (!abierto && p <= .14) animarP(0, 400); });
+  sobreEl.addEventListener("mouseenter", function(){
+    if (abierto || arrastrando) return;
+    if (p < .09) animarP(.09, 400);
+  });
+  sobreEl.addEventListener("mouseleave", function(){
+    if (abierto || arrastrando) return;
+    if (p <= .14) animarP(0, 400);
+  });
 }
 
 /* — A los 6 s sin actividad, la solapa cabecea — */
