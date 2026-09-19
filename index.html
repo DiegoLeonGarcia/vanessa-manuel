@@ -54,8 +54,8 @@
   --carta-sube: 64%;     /* cuánto sube la carta al salir */
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      clamp(150px, 34vw, 330px);
-  --col-out:    -9%;     /* cuánto se esconden las columnas fuera de cuadro */
+  --col-w:      clamp(112px, 26vw, 250px);
+  --col-out:    -6%;     /* cuánto se esconden las columnas fuera de cuadro */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -116,8 +116,8 @@ p{margin:0 0 1.1rem}
   perspective:1400px;perspective-origin:50% 0%;
   filter:drop-shadow(0 26px 40px rgba(70,60,40,.28)) drop-shadow(0 6px 10px rgba(70,60,40,.16));
 }
-.sobre img{position:absolute;left:50%;transform:translateX(-50%);width:100%}
-.env-back{bottom:0;z-index:1}
+.sobre .env-back,.sobre .env-front{position:absolute;left:50%;transform:translateX(-50%);width:100%}
+.sobre .env-back{bottom:0;z-index:1}
 .carta{
   position:absolute;left:50%;bottom:4%;width:var(--carta-w);height:96%;
   transform:translateX(-50%) translateY(0);z-index:2;
@@ -127,23 +127,23 @@ p{margin:0 0 1.1rem}
   transition:transform 1.25s var(--curva);
 }
 .carta img{position:static;transform:none;width:38%;opacity:.55;margin-bottom:22%}
-.env-front{bottom:0;z-index:3}
-.env-flap{
-  top:0;z-index:4;height:var(--flap-h);width:100%;object-fit:fill;
+.sobre .env-front{bottom:0;z-index:3}
+.sobre .env-flap{
+  position:absolute;left:50%;top:0;z-index:4;height:var(--flap-h);width:100%;object-fit:fill;
   transform-origin:50% 0%;
   transform:translateX(-50%) rotateX(0deg);
   transition:transform 1.15s cubic-bezier(.62,.02,.28,1), z-index 0s linear .5s;
   backface-visibility:hidden;
 }
-.sello{
+.sobre .sello{
   position:absolute;left:50%;top:var(--sello-y);z-index:5;
-  width:var(--sello-w);transform:translate(-50%,-50%);
+  width:var(--sello-w);height:auto;transform:translate(-50%,-50%);
   cursor:grab;touch-action:none;
   filter:drop-shadow(0 6px 12px rgba(70,50,20,.42));
   transition:transform .5s var(--curva),opacity .5s ease;
 }
-.sello:active{cursor:grabbing}
-.sello.pulso{animation:pulso 2.6s ease-in-out infinite}
+.sobre .sello:active{cursor:grabbing}
+.sobre .sello.pulso{animation:pulso 2.6s ease-in-out infinite}
 @keyframes pulso{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.07)}}
 
 /* Estados de la apertura */
@@ -219,23 +219,28 @@ body.dentro .barra{opacity:1;pointer-events:auto}
 .apertura>.fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .apertura::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(ellipse at 50% 38%,rgba(243,237,227,.30),rgba(243,237,227,.72))}
-.apertura>*:not(.fondo){position:relative;z-index:2}
+.apertura>section{position:relative;z-index:2}
 
 #inicio{
   min-height:100svh;min-height:100dvh;display:flex;flex-direction:column;
   align-items:center;justify-content:center;text-align:center;
   padding:clamp(5rem,12vh,7rem) 1.2rem clamp(2rem,5vh,3rem)
 }
-.columna{position:absolute;top:0;width:var(--col-w);z-index:3;pointer-events:none;
-  filter:drop-shadow(0 10px 22px rgba(70,60,40,.15))}
-.col-i{left:var(--col-out)}
-.col-d{right:var(--col-out)}
+.columna{
+  position:absolute;top:0;z-index:3;pointer-events:none;
+  width:var(--col-w);height:clamp(420px,88svh,900px);object-fit:cover;
+  filter:drop-shadow(0 10px 22px rgba(70,60,40,.15));
+  -webkit-mask-image:linear-gradient(180deg,#000 74%,transparent 99%);
+  mask-image:linear-gradient(180deg,#000 74%,transparent 99%);
+}
+.col-i{left:var(--col-out);object-position:26% top}
+.col-d{right:var(--col-out);object-position:74% top}
 .hojas{position:absolute;z-index:6;pointer-events:none;width:min(72vw,460px);
   filter:blur(9px);opacity:.75;transition:opacity .6s ease}
 .hojas-1{top:-7%;left:-18%;transform:rotate(14deg)}
 .hojas-2{top:2%;right:-22%;transform:rotate(-160deg)}
 
-.logo-novios{width:min(74vw,400px);margin:1.1rem auto 1.3rem}
+.logo-novios{width:min(68vw,360px);max-height:36svh;object-fit:contain;margin:1.1rem auto 1.3rem}
 .fecha{font-family:"Marcellus",serif;font-size:clamp(.7rem,2.4vw,.86rem);
   letter-spacing:.4em;text-transform:uppercase;color:var(--tinta-70);margin:0}
 .lema{font-style:italic;font-size:clamp(1.12rem,3.8vw,1.45rem);line-height:1.5;
@@ -427,7 +432,7 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 <div class="velo" id="velo"></div>
 
 <aside class="panel" id="panel" aria-hidden="true">
-  <img class="panel-fondo" src="assets/img/menu_bg.png" alt="">
+  <img class="panel-fondo" src="assets/img/menu_bg.png" alt="" loading="lazy">
   <div class="vel"></div>
   <button class="btn-icono cerrar" id="cerrar-panel" aria-label="Cerrar menú">
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M0 0l12 12M12 0L0 12"/></svg>
@@ -491,13 +496,13 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ==================== 03 · PUENTE ==================== -->
 <section class="escena-foto" id="puente">
-  <img class="fondo" src="assets/img/image_01.png" alt="">
+  <img class="fondo" src="assets/img/image_01.jpeg" alt="" loading="lazy">
   <p class="frase anim">Hay momentos que se sienten destinados, y este es uno de ellos.</p>
 </section>
 
 <!-- ==================== 04 · MENSAJE ==================== -->
 <section class="texturada" id="mensaje">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
     <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><rect x="1.5" y="3.5" width="13" height="9"/><path d="M1.5 4.5L8 9l6.5-4.5"/></svg>
     <p class="rotulo anim" style="--d:150ms">Un día muy especial</p>
@@ -510,7 +515,7 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ==================== 05 · PADRES ==================== -->
 <section class="texturada" id="padres">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
     <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M8 13.5S2.5 10.3 2.5 6.6A3 3 0 018 5a3 3 0 015.5 1.6c0 3.7-5.5 6.9-5.5 6.9Z"/></svg>
     <p class="rotulo anim" style="--d:150ms">Con su bendición</p>
@@ -531,7 +536,7 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ==================== 06 · LUGARES ==================== -->
 <section class="texturada" id="lugares">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja">
     <p class="rotulo centro anim">Sábado 14 de noviembre</p>
     <div class="filete anim" style="--d:150ms"><i></i></div>
@@ -565,13 +570,13 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ==================== 07 · IMAGEN ==================== -->
 <section class="escena-foto">
-  <img class="fondo" src="assets/img/image_02.png" alt="">
+  <img class="fondo" src="assets/img/image_02.jpeg" alt="" loading="lazy">
   <p class="frase anim">Celebremos lo extraordinario de estar juntos.</p>
 </section>
 
 <!-- ==================== 08 · VESTIMENTA ==================== -->
 <section class="texturada" id="vestimenta">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
     <svg class="icono-sec anim" width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 1.5l2 2 2-2M5 14l1.6-8L5 4.3 8 3.5l3 .8-1.6 1.7L11 14z"/></svg>
     <p class="rotulo anim" style="--d:150ms">Código de vestimenta</p>
@@ -583,13 +588,13 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ==================== 09 · IMAGEN ==================== -->
 <section class="escena-foto">
-  <img class="fondo" src="assets/img/image_03.png" alt="">
+  <img class="fondo" src="assets/img/image_03.jpeg" alt="" loading="lazy">
   <p class="frase anim">Más que un día, una vida juntos.</p>
 </section>
 
 <!-- ==================== 10 · CONFIRMAR ==================== -->
 <section class="texturada" id="confirmar">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
     <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 8.4l3.6 3.6L14 3.6"/></svg>
     <p class="rotulo anim" style="--d:150ms">Confirma tu asistencia</p>
