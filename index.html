@@ -196,7 +196,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 
 .panel{
   position:fixed;top:0;left:0;bottom:0;z-index:90;width:min(82vw,332px);
-  background:var(--papel) url('assets/img/menu_bg.png') center/cover no-repeat;
+  background:var(--papel) url('assets/img/menu_bg.png') right center/cover no-repeat;
   box-shadow:6px 0 34px rgba(58,69,54,.18);
   border-right:1px solid rgba(155,170,150,.5);
   transform:translateX(-102%);
@@ -208,8 +208,11 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 }
 .panel::-webkit-scrollbar{width:0;height:0;display:none}
 .menu-abierto .panel{transform:none}
-.panel::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(104deg,rgba(243,237,227,.90) 34%,rgba(243,237,227,.55) 100%)}
+.panel::after{content:"";position:absolute;top:0;bottom:0;right:0;width:7px;z-index:3;
+  pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,rgba(255,252,246,.62) 42%,
+    rgba(255,252,246,.34) 72%,rgba(122,100,66,.22) 100%)}
 
 .panel .logo-panel{position:relative;z-index:2;display:block;
   width:min(62%,190px);margin:0 auto 26px;
@@ -237,9 +240,13 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .menu-abierto .panel a:nth-of-type(6){transition-delay:.36s}
 .menu-abierto .panel a:nth-of-type(7){transition-delay:.40s}
 .menu-abierto .panel a:nth-of-type(8){transition-delay:.44s}
-.panel .aparte{margin-top:18px;padding-top:14px;position:relative;z-index:2}
-.panel .aparte::before{content:"";position:absolute;top:0;left:30px;right:30px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(155,170,150,.6),transparent)}
+.panel .aparte{margin-top:20px;position:relative;z-index:2}
+.panel .raya-menu{display:block;height:1px;margin:0 30px 16px;
+  background:linear-gradient(90deg,transparent,rgba(155,170,150,.8),transparent);
+  opacity:0;transform:scaleX(.45);transform-origin:center;
+  transition:opacity .5s ease,transform .75s cubic-bezier(.2,.8,.3,1)}
+.menu-abierto .panel .raya-menu{opacity:1;transform:none;transition-delay:.44s}
+.menu-abierto .panel .aparte a{transition-delay:.54s}
 
 /* ── Animaciones de entrada: una sola vez y se quedan ── */
 .anim{opacity:0;transform:translateY(26px);
@@ -467,9 +474,10 @@ footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,1
     Confirmar asistencia
   </a>
   <div class="aparte">
+    <span class="raya-menu"></span>
     <a href="#" id="ver-sobre">
       <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.4 3.2h6.2v13.6H2.4zM11.4 3.2h6.2v13.6h-6.2z"/><circle cx="7.2" cy="10" r=".7" fill="currentColor" stroke="none"/><circle cx="12.8" cy="10" r=".7" fill="currentColor" stroke="none"/></svg>
-      Ver la portada
+      Cerrar las puertas
     </a>
   </div>
 </nav>
