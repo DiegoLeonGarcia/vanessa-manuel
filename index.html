@@ -91,8 +91,8 @@ p{margin:0 0 1.1rem}
   --prop:1.7768;                  /* proporción real del archivo */
   --vw:100vw;                     /* el JS los reemplaza con px medidos */
   --vh:100svh;
-  --junta:7px;                    /* cuánto se recorta la orilla interior */
-  --imgW:calc(max(var(--vw), var(--vh) * var(--prop)) * 1.014);
+  --junta:3px;                    /* cuánto se recorta la orilla interior */
+  --imgW:calc(max(var(--vw), var(--vh) * var(--prop)) * 1.005);
   --imgH:calc(var(--imgW) / var(--prop));
   --ox:calc((var(--vw) - var(--imgW)) / 2);
   --oy:calc((var(--vh) - var(--imgH)) / 2);
@@ -714,13 +714,23 @@ function cerrar(){
    por culpa de las barras del navegador. Medimos el elemento y listo.
    ------------------------------------------------------------------------ */
 function medir(){
-  escena.style.setProperty("--vw", escena.clientWidth + "px");
-  escena.style.setProperty("--vh", escena.clientHeight + "px");
+  var h = Math.max(escena.clientHeight, window.innerHeight || 0,
+                   document.documentElement.clientHeight || 0);
+  var w = Math.max(escena.clientWidth, window.innerWidth || 0,
+                   document.documentElement.clientWidth || 0);
+  escena.style.setProperty("--vw", w + "px");
+  escena.style.setProperty("--vh", h + "px");
 }
 medir();
+[80, 300, 700, 1500].forEach(function(ms){ setTimeout(medir, ms); });
+window.addEventListener("load", medir);
+window.addEventListener("pageshow", medir);
 window.addEventListener("resize", medir);
-window.addEventListener("orientationchange", function(){ setTimeout(medir, 240); });
-if (window.visualViewport) window.visualViewport.addEventListener("resize", medir);
+window.addEventListener("orientationchange", function(){ setTimeout(medir, 260); });
+if (window.visualViewport){
+  window.visualViewport.addEventListener("resize", medir);
+  window.visualViewport.addEventListener("scroll", medir);
+}
 
 /* ---------- Se toca y se abre. Nada más ---------- */
 escena.addEventListener("click", function(){ if (!abierto) abrir(); });
