@@ -80,39 +80,43 @@ p{margin:0 0 1.1rem}
 /* ==========================================================================
    00 · LAS PUERTAS
    --------------------------------------------------------------------------
-   Un solo archivo (gates.png, 1672x941, costura exacta al centro). Cada panel
+   Un solo archivo (gates.png, 1672x941, costura al centro). Cada panel
    muestra su mitad. Sin capas encima: la imagen tal cual.
-   El sello y los textos se colocan en COORDENADAS DE LA IMAGEN, así que
-   siempre caen en el mismo punto del diseño, sin importar la pantalla.
+   --vw y --vh los mide el JS con el tamaño REAL del elemento, porque en
+   iOS las barras del navegador hacen que 100svh no coincida con la pantalla.
    --p: 0 cerradas, 1 abiertas.
    ========================================================================== */
 #puertas{
   --p:0;
-  --prop:1.7768;                               /* proporción real del archivo */
-  --imgW:max(100vw, 100svh * var(--prop));     /* la imagen cubriendo la ventana */
+  --prop:1.7768;                  /* proporción real del archivo */
+  --vw:100vw;                     /* el JS los reemplaza con px medidos */
+  --vh:100svh;
+  --junta:7px;                    /* cuánto se recorta la orilla interior */
+  --imgW:calc(max(var(--vw), var(--vh) * var(--prop)) * 1.014);
   --imgH:calc(var(--imgW) / var(--prop));
-  --ox:calc((100vw - var(--imgW)) / 2);
-  --oy:calc((100svh - var(--imgH)) / 2);
+  --ox:calc((var(--vw) - var(--imgW)) / 2);
+  --oy:calc((var(--vh) - var(--imgH)) / 2);
   --sello-w:clamp(84px, calc(var(--imgW) * .105), 230px);
-  --salida:calc(50vw + var(--sello-w));        /* lo que viaja cada panel */
+  --salida:calc(var(--vw) / 2 + var(--sello-w));
 
   position:fixed;inset:0;z-index:70;overflow:hidden;cursor:pointer;
-  background:#EEE3D9;
+  background:transparent;        /* así la invitación se ve por la abertura */
 }
 #puertas.fuera{pointer-events:none;visibility:hidden}
 
 .hoja{
   position:absolute;top:0;bottom:0;width:calc(50% + 1px);
+  background-color:#EEE3D9;
   background-image:url("assets/img/gates.png");
   background-repeat:no-repeat;
   background-size:var(--imgW) var(--imgH);
   will-change:transform;
 }
 .hoja-i{left:0;
-  background-position:var(--ox) var(--oy);
+  background-position:calc(var(--ox) + var(--junta)) var(--oy);
   transform:translateX(calc(var(--p) * (0px - var(--salida))))}
 .hoja-d{right:0;
-  background-position:calc(var(--ox) - 50vw + 1px) var(--oy);
+  background-position:calc(var(--ox) - var(--vw) / 2 + 1px - var(--junta)) var(--oy);
   transform:translateX(calc(var(--p) * var(--salida)))}
 
 /* El sello: impregnado al panel derecho, en su lugar del diseño */
@@ -125,24 +129,32 @@ p{margin:0 0 1.1rem}
   filter:drop-shadow(3px 7px 9px rgba(56,34,8,.42));
 }
 
-/* Textos: en la banda limpia del diseño, bien visibles */
+/* Textos, en la banda limpia del diseño */
 .llamada,.para{position:absolute;left:0;right:0;z-index:3;text-align:center;
   pointer-events:none;opacity:calc((.20 - var(--p)) / .15)}
-.llamada{top:calc(var(--oy) + var(--imgH) * .745)}
-.para{top:calc(var(--oy) + var(--imgH) * .895)}
+.llamada{top:calc(var(--oy) + var(--imgH) * .745);
+  display:flex;align-items:center;justify-content:center;gap:clamp(.9rem,3.4vw,1.8rem)}
 .llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:#4A4030;
   font-size:clamp(.9rem,3.4vw,1.18rem);letter-spacing:.34em;text-transform:uppercase;
-  text-shadow:0 0 14px rgba(255,251,243,1),0 0 30px rgba(255,251,243,.95),0 0 52px rgba(255,251,243,.75)}
-.llamada .flecha{margin:1rem auto 0;color:#8E6E3F;
-  filter:drop-shadow(0 0 10px rgba(255,251,243,1));
-  animation:subir 3.2s ease-in-out infinite}
-@keyframes subir{0%,100%{transform:translateY(3px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+  padding:.55em 1.1em;
+  /* velo tenue, anclado al propio texto: viaja con él */
+  background:radial-gradient(ellipse 58% 118% at 50% 50%,
+    rgba(255,253,248,.92) 0%,rgba(255,253,248,.62) 46%,rgba(255,253,248,0) 78%);
+  text-shadow:0 0 12px rgba(255,252,246,1),0 0 26px rgba(255,252,246,.9)}
+.llamada .chev{color:#8E6E3F;display:block;
+  filter:drop-shadow(0 0 9px rgba(255,252,246,1)) drop-shadow(0 0 18px rgba(255,252,246,.9))}
+.llamada .chev-i{animation:abre-i 3.2s ease-in-out infinite}
+.llamada .chev-d{animation:abre-d 3.2s ease-in-out infinite}
+@keyframes abre-i{0%,100%{transform:translateX(3px);opacity:.5}50%{transform:translateX(-4px);opacity:1}}
+@keyframes abre-d{0%,100%{transform:translateX(-3px);opacity:.5}50%{transform:translateX(4px);opacity:1}}
+
+.para{top:calc(var(--oy) + var(--imgH) * .888)}
 .para-rotulo{font-family:"Marcellus",serif;margin:0;color:#6E7A5E;
   font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase;
-  text-shadow:0 0 14px rgba(255,251,243,1),0 0 28px rgba(255,251,243,.9)}
+  text-shadow:0 0 14px rgba(255,252,246,1),0 0 28px rgba(255,252,246,.9)}
 .para-nombre{font-style:italic;margin:.3rem 0 0;color:var(--tinta);
   font-size:clamp(1.02rem,3.4vw,1.3rem);
-  text-shadow:0 0 16px rgba(255,251,243,1),0 0 32px rgba(255,251,243,.9)}
+  text-shadow:0 0 16px rgba(255,252,246,1),0 0 32px rgba(255,252,246,.9)}
 
 /* Botón plano para volver a la portada */
 .btn-plano{width:44px;height:44px;display:grid;place-items:center;color:var(--tinta);
@@ -380,8 +392,9 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
   <div class="hoja hoja-d"><div class="sello"></div></div>
 
   <div class="llamada">
+    <svg class="chev chev-i" width="13" height="22" viewBox="0 0 11 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 1.5 2 10l7 8.5"/></svg>
     <b>Toca para abrir</b>
-    <svg class="flecha" width="30" height="16" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 11l10-10 10 10"/></svg>
+    <svg class="chev chev-d" width="13" height="22" viewBox="0 0 11 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 1.5 9 10l-7 8.5"/></svg>
   </div>
   <div class="para" id="para" hidden>
     <p class="para-rotulo">Para</p>
@@ -695,6 +708,19 @@ function cerrar(){
   callar();
   animarP(0, 1750, ocioso);
 }
+
+/* ---------- Medir la ventana de verdad -----------------------------------
+   En iOS, 100svh no coincide con lo que realmente ocupa un elemento fijo
+   por culpa de las barras del navegador. Medimos el elemento y listo.
+   ------------------------------------------------------------------------ */
+function medir(){
+  escena.style.setProperty("--vw", escena.clientWidth + "px");
+  escena.style.setProperty("--vh", escena.clientHeight + "px");
+}
+medir();
+window.addEventListener("resize", medir);
+window.addEventListener("orientationchange", function(){ setTimeout(medir, 240); });
+if (window.visualViewport) window.visualViewport.addEventListener("resize", medir);
 
 /* ---------- Se toca y se abre. Nada más ---------- */
 escena.addEventListener("click", function(){ if (!abierto) abrir(); });
