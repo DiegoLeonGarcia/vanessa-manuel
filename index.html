@@ -45,10 +45,8 @@
   --fs-h2:      clamp(1.45rem, 4.2vw, 2.05rem);
   --curva:      cubic-bezier(.22,.61,.36,1);
 
-  /* — GEOMETRÍA DE LAS PUERTAS — */
-  --giro:       78deg;   /* cuánto giran las puertas al abrirse */
-  --sello-w:    clamp(76px, 34%, 190px);  /* ancho del sello sobre la costura */
-  --grosor:     clamp(7px, 1.1vmin, 14px); /* grosor real de cada puerta */
+  /* — LAS PUERTAS — */
+  --sello-w:    clamp(74px, 33%, 180px);  /* ancho del sello sobre la costura */
 
   /* — GEOMETRÍA DEL INICIO — */
   --col-w:      clamp(112px, 26vw, 250px);
@@ -82,82 +80,63 @@ p{margin:0 0 1.1rem}
 .filete i{width:5px;height:5px;background:var(--laton);transform:rotate(45deg);display:block}
 
 /* ==========================================================================
-   00 · LAS PUERTAS
+   00 · LAS PUERTAS  —  versión simple a propósito
    --------------------------------------------------------------------------
-   Tapa fija encima de la invitación. Toda la mecánica en --p (0 cerradas,
-   1 abiertas). Las puertas CONSERVAN SU PROPORCIÓN REAL: se ajustan al alto
-   de la ventana y se centran; lo que sobra lo cubre el papel de fondo. Así
-   nunca se estira ni se recorta el diseño.
+   Dos paneles. Cada uno ocupa su mitad de la pantalla y se corre hacia su
+   lado. Sin 3D, sin marco anidado, sin perspectiva. Todo vive en --p:
+   0 = cerradas, 1 = abiertas. No hay nada que se pueda desalinear.
    ========================================================================== */
 #puertas{
   --p:0;
   position:fixed;inset:0;z-index:70;overflow:hidden;
-  display:grid;place-items:center;
-  perspective:2600px;perspective-origin:50% 50%;
   touch-action:none;cursor:pointer;
 }
-#puertas.fuera{pointer-events:none}
-.fondo-puertas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;
-  opacity:calc((1 - var(--p)) / .34)}
-.aire{position:absolute;inset:0;z-index:0;pointer-events:none;
-  opacity:calc((1 - var(--p)) / .34);
-  background:radial-gradient(ellipse 96% 80% at 34% 24%,
-    rgba(255,244,222,.40),rgba(255,244,222,0) 42%,rgba(104,68,34,.38) 100%)}
+#puertas.fuera{pointer-events:none;visibility:hidden}
 
-/* El par de puertas, con su proporción intacta */
-.marco{position:relative;z-index:1;transform-style:preserve-3d;
-  width:min(100svh * .728, 128vw);height:min(100svh, 128vw / .728);
-  box-shadow:calc(var(--grosor) * 1.4) calc(var(--grosor) * 2) calc(var(--grosor) * 4.5) rgba(58,38,14,.38),
-             calc(var(--grosor) * 4) calc(var(--grosor) * 6) calc(var(--grosor) * 13) rgba(58,38,14,.22);
-  transition:box-shadow .5s ease}
-#puertas.fuera .marco{box-shadow:none}
-
-.hoja{position:absolute;top:0;bottom:0;width:50.2%;
-  transform-style:preserve-3d;
-  opacity:calc((1 - var(--p)) / .22);
-  will-change:transform}
-.hoja img.panel{width:100%;height:100%;object-fit:cover;display:block}
-.hoja-i{left:0;z-index:1;transform-origin:left center;
-  transform:rotateY(calc(var(--p) * (0deg - var(--giro))))}
-.hoja-i img.panel{object-position:right center}
-.hoja-d{right:0;z-index:2;transform-origin:right center;
-  transform:rotateY(calc(var(--p) * var(--giro)))}
-.hoja-d img.panel{object-position:left center}
-
-/* El grosor: una tira en el canto libre, girada 90° en el espacio */
-.grosor{position:absolute;top:0;bottom:0;width:var(--grosor);
-  background:linear-gradient(90deg,#F6EEDF 0%,#E4D8C0 45%,#C9B999 100%)}
-.hoja-i .grosor{right:0;transform-origin:right center;transform:rotateY(90deg)}
-.hoja-d .grosor{left:0;transform-origin:left center;transform:rotateY(-90deg);
-  background:linear-gradient(270deg,#F6EEDF 0%,#E4D8C0 45%,#C9B999 100%)}
+.hoja{
+  position:absolute;top:0;bottom:0;width:50.4%;
+  background-repeat:no-repeat;background-size:cover;
+  will-change:transform;
+}
+.hoja-i{
+  left:0;
+  background-image:url("assets/img/gate_left.png");
+  background-position:right center;
+  transform:translateX(calc(var(--p) * -101%));
+  box-shadow:7px 0 26px rgba(58,38,14,.30);
+}
+.hoja-d{
+  right:0;
+  background-image:url("assets/img/gate_right.png");
+  background-position:left center;
+  transform:translateX(calc(var(--p) * 101%));
+  box-shadow:-7px 0 26px rgba(58,38,14,.30);
+}
 
 /* Luz de atardecer sobre el papel */
-.hoja .luz{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light}
-.hoja-i .luz{background:linear-gradient(139deg,
-  rgba(255,204,132,.95) 0%,rgba(255,212,164,.34) 46%,rgba(96,54,14,.26) 100%)}
-.hoja-d .luz{background:linear-gradient(139deg,
-  rgba(255,214,168,.42) 0%,rgba(255,212,164,.12) 34%,rgba(96,54,14,.40) 100%)}
+.hoja::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light}
+.hoja-i::before{background:linear-gradient(139deg,
+  rgba(255,206,136,.92) 0%,rgba(255,212,164,.30) 48%,rgba(96,54,14,.24) 100%)}
+.hoja-d::before{background:linear-gradient(139deg,
+  rgba(255,214,168,.40) 0%,rgba(255,212,164,.10) 36%,rgba(96,54,14,.38) 100%)}
 
-/* La cara se aparta de la luz conforme gira */
-.hoja .cara{position:absolute;inset:0;pointer-events:none;opacity:calc(var(--p) * .66)}
-.hoja-i .cara{background:linear-gradient(90deg,rgba(34,22,8,0) 26%,rgba(34,22,8,.92))}
-.hoja-d .cara{background:linear-gradient(270deg,rgba(34,22,8,0) 26%,rgba(34,22,8,.92))}
+/* La sombra de la rendija */
+.hoja::after{content:"";position:absolute;top:0;bottom:0;width:8%;pointer-events:none}
+.hoja-i::after{right:0;background:linear-gradient(90deg,rgba(56,36,12,0),rgba(56,36,12,.30))}
+.hoja-d::after{left:0;background:linear-gradient(270deg,rgba(56,36,12,0),rgba(56,36,12,.30))}
 
-/* La sombra de la rendija, que se abre con las puertas */
-.hoja .canto{position:absolute;top:0;bottom:0;width:7%;pointer-events:none;
-  opacity:calc(.45 + var(--p) * .55)}
-.hoja-i .canto{right:0;background:linear-gradient(90deg,rgba(56,36,12,0),rgba(56,36,12,.34))}
-.hoja-d .canto{left:0;background:linear-gradient(270deg,rgba(56,36,12,0),rgba(56,36,12,.34))}
+/* El sello: vive en el panel derecho y se va entero con él */
+.sello{
+  position:absolute;left:0;top:50%;z-index:2;
+  width:var(--sello-w);aspect-ratio:1278/1230;
+  transform:translate(-50%,-50%);
+  background:url("assets/img/seal.png") center/contain no-repeat;
+  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.48)) drop-shadow(9px 18px 22px rgba(56,34,8,.22));
+}
 
-/* El sello: montado sobre la costura, con profundidad real */
-.hoja .sello{position:absolute;left:0;top:50%;z-index:3;
-  width:var(--sello-w);height:auto;object-fit:contain;
-  transform:translate(-50%,-50%) translateZ(calc(var(--grosor) * 1.2));
-  filter:drop-shadow(3px 7px 8px rgba(56,34,8,.5)) drop-shadow(9px 18px 24px rgba(56,34,8,.26))}
-
-/* Textos, independientes de las puertas */
-.sobre-textos{position:absolute;left:0;right:0;top:50%;z-index:4;text-align:center;
-  pointer-events:none;opacity:calc((.17 - var(--p)) / .13)}
+/* Textos, independientes de los paneles */
+.sobre-textos{position:absolute;left:0;right:0;top:50%;z-index:3;text-align:center;
+  pointer-events:none;opacity:calc((.20 - var(--p)) / .15)}
 .para{margin:0 0 clamp(4.4rem,12vh,8rem)}
 .para-rotulo{font-family:"Marcellus",serif;margin:0;color:rgba(110,122,94,.9);
   font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase}
@@ -396,22 +375,8 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
 
 <!-- ============================ 00 · PUERTAS ============================ -->
 <div id="puertas" role="button" tabindex="0" aria-label="Abrir la invitación">
-  <img class="fondo-puertas" src="assets/img/bg_envelope.png" alt="">
-  <div class="aire"></div>
-
-  <div class="marco">
-    <div class="hoja hoja-i">
-      <img class="panel" src="assets/img/gate_left.png" alt="">
-      <div class="luz"></div><div class="cara"></div><div class="canto"></div>
-      <div class="grosor"></div>
-    </div>
-    <div class="hoja hoja-d">
-      <img class="panel" src="assets/img/gate_right.png" alt="">
-      <div class="luz"></div><div class="cara"></div><div class="canto"></div>
-      <div class="grosor"></div>
-      <img class="sello" src="assets/img/seal.png" alt="">
-    </div>
-  </div>
+  <div class="hoja hoja-i"></div>
+  <div class="hoja hoja-d"><div class="sello"></div></div>
 
   <div class="sobre-textos">
     <div class="para" id="para" hidden>
@@ -717,7 +682,7 @@ function abrir(){
   sonar();
 }
 function cerrar(){
-  limpiar(); acum = 0;
+  limpiar();
   abierto = false;
   escena.classList.remove("fuera");
   window.scrollTo(0,0);
