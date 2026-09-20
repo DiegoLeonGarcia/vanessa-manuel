@@ -45,9 +45,6 @@
   --fs-h2:      clamp(1.45rem, 4.2vw, 2.05rem);
   --curva:      cubic-bezier(.22,.61,.36,1);
 
-  /* — LAS PUERTAS — */
-  --sello-w:    clamp(74px, 12.5vmin, 158px); /* ancho del sello sobre la costura */
-  --aire-sello: clamp(1.5rem, 4.6vh, 3.2rem); /* respiro entre el sello y los textos */
 
   /* — GEOMETRÍA DEL INICIO — */
   --col-w:      clamp(112px, 26vw, 250px);
@@ -81,78 +78,71 @@ p{margin:0 0 1.1rem}
 .filete i{width:5px;height:5px;background:var(--laton);transform:rotate(45deg);display:block}
 
 /* ==========================================================================
-   00 · LAS PUERTAS  —  simple a propósito
+   00 · LAS PUERTAS
    --------------------------------------------------------------------------
-   Los dos paneles usan LA MISMA IMAGEN (gates_original), cada uno mostrando
-   su mitad. Al ser un solo archivo, la costura es matemáticamente perfecta:
-   no hay dos escalados distintos que puedan desfasarse.
-   Se toca y se abren. Nada más. Todo vive en --p (0 cerradas, 1 abiertas).
+   Un solo archivo (gates.png, 1672x941, costura exacta al centro). Cada panel
+   muestra su mitad. Sin capas encima: la imagen tal cual.
+   El sello y los textos se colocan en COORDENADAS DE LA IMAGEN, así que
+   siempre caen en el mismo punto del diseño, sin importar la pantalla.
+   --p: 0 cerradas, 1 abiertas.
    ========================================================================== */
 #puertas{
   --p:0;
-  /* la imagen completa, cubriendo la ventana como una sola pieza */
-  --imgW:max(100vw, 100svh * .728);
-  --imgH:calc(var(--imgW) / .728);
+  --prop:1.7768;                               /* proporción real del archivo */
+  --imgW:max(100vw, 100svh * var(--prop));     /* la imagen cubriendo la ventana */
+  --imgH:calc(var(--imgW) / var(--prop));
   --ox:calc((100vw - var(--imgW)) / 2);
   --oy:calc((100svh - var(--imgH)) / 2);
+  --sello-w:clamp(84px, calc(var(--imgW) * .105), 230px);
+  --salida:calc(50vw + var(--sello-w));        /* lo que viaja cada panel */
+
   position:fixed;inset:0;z-index:70;overflow:hidden;cursor:pointer;
+  background:#EEE3D9;
 }
 #puertas.fuera{pointer-events:none;visibility:hidden}
 
 .hoja{
   position:absolute;top:0;bottom:0;width:calc(50% + 1px);
-  background-image:url("assets/img/gates_original.png");
+  background-image:url("assets/img/gates.png");
   background-repeat:no-repeat;
   background-size:var(--imgW) var(--imgH);
   will-change:transform;
 }
 .hoja-i{left:0;
   background-position:var(--ox) var(--oy);
-  transform:translateX(calc(var(--p) * -101%))}
+  transform:translateX(calc(var(--p) * (0px - var(--salida))))}
 .hoja-d{right:0;
   background-position:calc(var(--ox) - 50vw + 1px) var(--oy);
-  transform:translateX(calc(var(--p) * 101%))}
+  transform:translateX(calc(var(--p) * var(--salida)))}
 
-/* Luz de atardecer sobre el papel */
-.hoja::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light}
-.hoja-i::before{background:linear-gradient(139deg,
-  rgba(255,206,136,.88) 0%,rgba(255,212,164,.28) 48%,rgba(96,54,14,.22) 100%)}
-.hoja-d::before{background:linear-gradient(139deg,
-  rgba(255,214,168,.38) 0%,rgba(255,212,164,.09) 36%,rgba(96,54,14,.34) 100%)}
-
-/* La rendija: en píxeles fijos y muy tenue, para que no se vea hundido */
-.hoja::after{content:"";position:absolute;top:0;bottom:0;width:26px;pointer-events:none}
-.hoja-i::after{right:0;background:linear-gradient(90deg,rgba(74,52,24,0),rgba(74,52,24,.13))}
-.hoja-d::after{left:0;background:linear-gradient(270deg,rgba(74,52,24,0),rgba(74,52,24,.13))}
-
-/* El sello: vive en el panel derecho y se va entero con él */
+/* El sello: impregnado al panel derecho, en su lugar del diseño */
 .sello{
-  position:absolute;left:0;top:50%;z-index:2;
+  position:absolute;left:0;z-index:2;
+  top:calc(var(--oy) + var(--imgH) * .575);
   width:var(--sello-w);aspect-ratio:1278/1230;
   transform:translate(-50%,-50%);
   background:url("assets/img/seal.png") center/contain no-repeat;
-  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.46)) drop-shadow(9px 18px 22px rgba(56,34,8,.20));
+  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.42));
 }
 
-/* Textos: colocados a partir del mismo número que mide el sello, así
-   nunca se le encima por grande que se ponga */
-.para,.llamada{position:absolute;left:0;right:0;z-index:3;text-align:center;
-  pointer-events:none;opacity:calc((.22 - var(--p)) / .16)}
-.para{bottom:calc(50% + var(--sello-w) * .5 + var(--aire-sello))}
-.llamada{top:calc(50% + var(--sello-w) * .5 + var(--aire-sello))}
-.para-rotulo{font-family:"Marcellus",serif;margin:0;color:rgba(104,116,88,.95);
-  font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase;
-  text-shadow:0 0 16px rgba(255,251,242,.95),0 0 30px rgba(255,251,242,.8)}
-.para-nombre{font-style:italic;margin:.3rem 0 0;color:var(--tinta);
-  font-size:clamp(1.05rem,3.6vw,1.35rem);
-  text-shadow:0 0 18px rgba(255,251,242,.95),0 0 34px rgba(255,251,242,.85)}
-.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:rgba(78,66,40,.96);
-  font-size:clamp(.76rem,2.7vw,.96rem);letter-spacing:.36em;text-transform:uppercase;
-  text-shadow:0 0 18px rgba(255,251,242,.98),0 0 36px rgba(255,251,242,.9),0 0 60px rgba(255,251,242,.7)}
-.llamada .flecha{margin:.8rem auto 0;color:rgba(142,110,63,.95);
-  filter:drop-shadow(0 0 12px rgba(255,251,242,.95));
+/* Textos: en la banda limpia del diseño, bien visibles */
+.llamada,.para{position:absolute;left:0;right:0;z-index:3;text-align:center;
+  pointer-events:none;opacity:calc((.20 - var(--p)) / .15)}
+.llamada{top:calc(var(--oy) + var(--imgH) * .745)}
+.para{top:calc(var(--oy) + var(--imgH) * .895)}
+.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:#4A4030;
+  font-size:clamp(.9rem,3.4vw,1.18rem);letter-spacing:.34em;text-transform:uppercase;
+  text-shadow:0 0 14px rgba(255,251,243,1),0 0 30px rgba(255,251,243,.95),0 0 52px rgba(255,251,243,.75)}
+.llamada .flecha{margin:1rem auto 0;color:#8E6E3F;
+  filter:drop-shadow(0 0 10px rgba(255,251,243,1));
   animation:subir 3.2s ease-in-out infinite}
 @keyframes subir{0%,100%{transform:translateY(3px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+.para-rotulo{font-family:"Marcellus",serif;margin:0;color:#6E7A5E;
+  font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase;
+  text-shadow:0 0 14px rgba(255,251,243,1),0 0 28px rgba(255,251,243,.9)}
+.para-nombre{font-style:italic;margin:.3rem 0 0;color:var(--tinta);
+  font-size:clamp(1.02rem,3.4vw,1.3rem);
+  text-shadow:0 0 16px rgba(255,251,243,1),0 0 32px rgba(255,251,243,.9)}
 
 /* Botón plano para volver a la portada */
 .btn-plano{width:44px;height:44px;display:grid;place-items:center;color:var(--tinta);
@@ -389,13 +379,13 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
   <div class="hoja hoja-i"></div>
   <div class="hoja hoja-d"><div class="sello"></div></div>
 
+  <div class="llamada">
+    <b>Toca para abrir</b>
+    <svg class="flecha" width="30" height="16" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 11l10-10 10 10"/></svg>
+  </div>
   <div class="para" id="para" hidden>
     <p class="para-rotulo">Para</p>
     <p class="para-nombre" id="para-nombre"></p>
-  </div>
-  <div class="llamada">
-    <b>Toca para abrir</b>
-    <svg class="flecha" width="26" height="14" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
   </div>
 </div>
 
