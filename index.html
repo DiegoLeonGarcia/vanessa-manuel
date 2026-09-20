@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vanessa &amp; Manuel · 14 de noviembre de 2026</title>
 <meta name="description" content="Nos casamos. Sábado 14 de noviembre de 2026.">
+<meta name="theme-color" content="#F3EDE3">
 <link rel="icon" href="assets/img/favicon_vm.png">
 <link rel="apple-touch-icon" href="assets/img/favicon_vm.png">
 <meta property="og:title" content="Vanessa &amp; Manuel · Nuestra boda">
@@ -13,7 +14,7 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Marcellus&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Marcellus&family=Montserrat:wght@400;500;600&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================================
    VANESSA & MANUEL — invitación digital
@@ -47,15 +48,16 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      clamp(128px, 30vw, 330px);  /* ancho de las columnas */
-  --col-sube:   clamp(26px, 6vw, 70px);     /* cuánto se oculta el arco por arriba */
+  --col-w:      clamp(74px, 17vw, 190px);   /* ancho de las columnas */
+  --col-h:      clamp(330px, 74svh, 780px); /* alto visible; se recorta por arriba */
 }
 
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;overscroll-behavior-y:contain;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 body{
   margin:0;overscroll-behavior-y:contain;background:var(--papel);color:var(--tinta);
-  font-family:"Cormorant Garamond",Georgia,serif;font-size:var(--fs-body);line-height:1.75;
+  font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
+  font-size:var(--fs-body);line-height:1.8;
   overflow-x:hidden;
 }
 body.sin-scroll{overflow:hidden;height:100%;position:fixed;width:100%}
@@ -167,7 +169,7 @@ p{margin:0 0 1.1rem}
   background:linear-gradient(150deg,rgba(255,255,255,.95),rgba(255,255,255,.82) 50%,rgba(255,255,255,.9));
   -webkit-backdrop-filter:blur(14px) saturate(170%);backdrop-filter:blur(14px) saturate(170%);
   box-shadow:inset 0 1px 1px #fff,inset 0 -1px 2px rgba(110,122,94,.18),0 5px 16px rgba(58,69,54,.18);
-  transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .8s ease;
+  transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .45s ease;
 }
 .btn-vidrio::after{content:'';position:absolute;inset:0;border-radius:50%;
   border:1.4px solid rgba(155,170,150,.6)}
@@ -177,7 +179,7 @@ p{margin:0 0 1.1rem}
 
 .btn-menu{position:fixed;top:20px;left:20px;z-index:95;opacity:0;pointer-events:none}
 .musica{position:fixed;top:20px;right:20px;z-index:95;opacity:0;pointer-events:none}
-body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transition-delay:.35s}
+body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transition-delay:.05s}
 
 .btn-menu span{position:absolute;left:50%;width:19px;height:1.5px;background:var(--tinta);
   border-radius:2px;transform:translateX(-50%);
@@ -221,8 +223,8 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .menu-abierto .panel .logo-panel{opacity:1;transform:none;transition-delay:.1s}
 
 .panel a{position:relative;z-index:2;display:flex;align-items:center;gap:16px;
-  padding:11px 30px;font-family:"Marcellus",serif;font-weight:400;
-  font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  padding:12px 30px;font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--oliva);text-decoration:none;
   opacity:0;transform:translateX(-16px);
   transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.3,1),color .3s ease}
@@ -241,10 +243,14 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .menu-abierto .panel a:nth-of-type(7){transition-delay:.40s}
 .menu-abierto .panel a:nth-of-type(8){transition-delay:.44s}
 .panel .aparte{margin-top:20px;position:relative;z-index:2}
-.panel .raya-menu{display:block;height:1px;margin:0 30px 16px;
-  background:linear-gradient(90deg,transparent,rgba(155,170,150,.8),transparent);
+.panel .raya-menu{display:flex;align-items:center;justify-content:center;gap:12px;
+  margin:0 26px 16px;
   opacity:0;transform:scaleX(.45);transform-origin:center;
   transition:opacity .5s ease,transform .75s cubic-bezier(.2,.8,.3,1)}
+.panel .raya-menu i{display:block;flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(176,141,87,.75))}
+.panel .raya-menu i:last-child{background:linear-gradient(90deg,rgba(176,141,87,.75),transparent)}
+.panel .raya-menu svg{flex:none;color:var(--laton)}
 .menu-abierto .panel .raya-menu{opacity:1;transform:none;transition-delay:.44s}
 .menu-abierto .panel .aparte a{transition-delay:.54s}
 
@@ -269,49 +275,59 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .separador b{display:block;width:5px;height:5px;background:var(--laton);transform:rotate(45deg)}
 
 /* ==========================================================================
-   01 + 02 · INICIO Y CONTADOR  (comparten fondo)
+   01 · INICIO   (sección independiente, sin ningún efecto encima)
+   --------------------------------------------------------------------------
+   El paisaje es ultrawide (1983x793): se ancla ABAJO para que el piso
+   siempre se vea y lo que se recorte sea el cielo.
+   Las columnas se anclan a la base, y lo que se recorta es su parte alta.
    ========================================================================== */
-.apertura{position:relative;overflow:hidden;background:var(--papel)}
-.apertura>.fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
-.apertura::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(243,237,227,.26) 0%,rgba(243,237,227,.08) 42%,rgba(243,237,227,.32) 100%)}
-.apertura>section{position:relative;z-index:2}
-
-/* Columnas ancladas a las orillas */
-.columna{position:absolute;top:calc(-1 * var(--col-sube));z-index:3;pointer-events:none;
-  width:var(--col-w);height:auto;
-  -webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 99%);
-  mask-image:linear-gradient(180deg,#000 78%,transparent 99%)}
+#inicio{position:relative;overflow:hidden;
+  min-height:100svh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:clamp(5.5rem,13vh,8rem) clamp(1.2rem,5vw,2rem) clamp(2rem,5vh,3rem)}
+#inicio .paisaje{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center bottom;z-index:0}
+.columna{position:absolute;bottom:0;z-index:1;pointer-events:none;
+  width:var(--col-w);height:var(--col-h);
+  object-fit:cover;object-position:center bottom}
 .col-i{left:0}
 .col-d{right:0}
+#inicio .caja,#inicio .baja{position:relative;z-index:2}
 
-#inicio{min-height:100svh;min-height:100dvh;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;
-  padding:clamp(5.5rem,13vh,8rem) clamp(1.2rem,5vw,2rem) clamp(2rem,5vh,3rem)}
-.antetitulo{font-family:"Marcellus",serif;font-size:clamp(11px,3vw,13px);
-  letter-spacing:.4em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.4rem}
-.logo-novios{width:min(64vw,330px);max-height:34svh;object-fit:contain;margin:0 auto 1.6rem}
-.fecha{font-family:"Marcellus",serif;font-size:clamp(12px,3.2vw,15px);
-  letter-spacing:.3em;text-transform:uppercase;color:var(--tinta-70);margin:0}
-.lema{font-family:"Cormorant Garamond",serif;font-style:italic;
-  font-size:clamp(19px,5vw,25px);line-height:1.6;color:var(--tinta);
-  margin:1.8rem auto 0;max-width:17ch}
+.antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(12px,3.4vw,15px);letter-spacing:.38em;text-transform:uppercase;
+  color:var(--oliva);margin:0 0 1.5rem}
+.logo-novios{width:min(64vw,330px);max-height:34svh;object-fit:contain;margin:0 auto 1.7rem}
+.fecha{font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(13px,3.7vw,17px);letter-spacing:.26em;text-transform:uppercase;
+  color:var(--tinta-70);margin:0}
+.lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
+  font-size:clamp(22px,6vw,30px);line-height:1.55;color:var(--tinta);
+  margin:1.9rem auto 0;max-width:16ch}
 .baja{display:inline-block;margin-top:clamp(1.8rem,5.5vh,3.2rem);color:var(--oliva);
   animation:baja 2.8s ease-in-out infinite}
 @keyframes baja{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
 
-#contador{padding:clamp(1rem,3vh,2rem) 1rem clamp(4.5rem,11vh,7rem);text-align:center}
-#contador .titulo{font-family:"Marcellus",serif;white-space:nowrap;text-transform:uppercase;
-  font-size:clamp(10px,2.5vw,13px);letter-spacing:clamp(.1em,.6vw,.3em);
-  color:var(--oliva);margin:0 0 1.6rem}
+/* ==========================================================================
+   02 · CUENTA REGRESIVA   (sección aparte, sobre papel)
+   ========================================================================== */
+#contador{background:var(--papel);position:relative;overflow:hidden;
+  padding:clamp(4rem,11vh,6.5rem) 1rem clamp(4.5rem,12vh,7rem);text-align:center}
+#contador .textura{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:.5;z-index:0}
+#contador>*:not(.textura){position:relative;z-index:1}
+#contador .titulo{font-family:"Montserrat",sans-serif;font-weight:600;
+  white-space:nowrap;text-transform:uppercase;
+  font-size:clamp(10px,2.7vw,13.5px);letter-spacing:clamp(.1em,.55vw,.28em);
+  color:var(--oliva);margin:0 0 1.8rem}
 .reloj{display:flex;justify-content:center;align-items:stretch}
 .unidad{flex:0 1 84px;padding:0 clamp(.5rem,3vw,1.5rem);position:relative}
 .unidad+.unidad::before{content:"";position:absolute;left:0;top:8%;bottom:18%;width:1px;
-  background:linear-gradient(180deg,transparent,rgba(110,122,94,.5),transparent)}
+  background:linear-gradient(180deg,transparent,rgba(110,122,94,.55),transparent)}
 .unidad b{display:block;font-family:"Marcellus",serif;font-weight:400;
-  font-size:clamp(34px,9vw,52px);line-height:1;color:var(--tinta)}
-.unidad span{display:block;margin-top:.55rem;font-family:"Marcellus",serif;
-  font-size:clamp(9px,2.2vw,10.5px);letter-spacing:.26em;text-transform:uppercase;color:var(--oliva)}
+  font-size:clamp(36px,9.5vw,54px);line-height:1;color:var(--tinta)}
+.unidad span{display:block;margin-top:.6rem;font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(9px,2.3vw,11px);letter-spacing:.24em;text-transform:uppercase;color:var(--oliva)}
 
 /* ==========================================================================
    SECCIONES
@@ -324,18 +340,18 @@ section{padding:clamp(4.5rem,12vh,7.5rem) clamp(1.2rem,5vw,2rem);position:relati
 .texturada::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;z-index:2;
   background:linear-gradient(90deg,transparent,rgba(155,170,150,.55),transparent)}
 .icono-sec{color:var(--laton-2);margin:0 auto 1.1rem;display:block}
-.rotulo{font-family:"Marcellus",serif;font-size:clamp(11px,3vw,13px);
-  letter-spacing:.4em;text-transform:uppercase;color:var(--oliva);margin:0 0 1rem}
-h2{font-family:"Marcellus",serif;font-size:clamp(23px,6vw,33px);font-weight:400;margin:0 0 1.2rem}
-p{margin:0 0 1.1rem;font-size:clamp(15px,4vw,16.5px);line-height:1.85}
+.rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11px,3.1vw,13.5px);
+  letter-spacing:.34em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.1rem}
+h2{font-family:"Marcellus",serif;font-size:clamp(26px,6.8vw,38px);font-weight:400;margin:0 0 1.3rem}
+p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-height:1.85}
 
 .escena-foto{position:relative;min-height:clamp(380px,72vh,620px);display:grid;place-items:center;
   text-align:center;overflow:hidden;padding:clamp(3rem,9vh,5rem) 1.4rem}
 .escena-foto .fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .escena-foto::after{content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(180deg,rgba(58,69,54,.38),rgba(58,69,54,.16) 45%,rgba(58,69,54,.46))}
-.escena-foto .frase{position:relative;z-index:2;color:#FBF7F0;font-style:italic;
-  font-size:clamp(20px,5.4vw,30px);line-height:1.55;max-width:19ch;margin:0 auto;
+.escena-foto .frase{position:relative;z-index:2;color:#FBF7F0;font-style:italic;font-weight:600;
+  font-size:clamp(22px,6vw,34px);line-height:1.5;max-width:18ch;margin:0 auto;
   text-shadow:0 2px 22px rgba(40,45,35,.55)}
 
 .padres{display:grid;gap:1.8rem;text-align:center}
@@ -344,8 +360,8 @@ p{margin:0 0 1.1rem;font-size:clamp(15px,4vw,16.5px);line-height:1.85}
   .padres{grid-template-columns:1fr 1px 1fr;gap:1.4rem}
   .padres .raya{display:block;background:linear-gradient(180deg,transparent,rgba(110,122,94,.5),transparent)}
 }
-.padres h3{font-family:"Marcellus",serif;font-weight:400;font-size:clamp(10px,2.6vw,11.5px);
-  letter-spacing:.28em;text-transform:uppercase;color:var(--oliva);margin:0 0 .8rem}
+.padres h3{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(10px,2.7vw,12px);
+  letter-spacing:.24em;text-transform:uppercase;color:var(--oliva);margin:0 0 .9rem}
 .padres p{margin:0;line-height:2.1}
 
 .lugares{display:grid;gap:clamp(2.8rem,7vw,3.4rem)}
@@ -357,15 +373,16 @@ p{margin:0 0 1.1rem;font-size:clamp(15px,4vw,16.5px);line-height:1.85}
 .lugar{text-align:center}
 .lugar .hora{font-family:"Marcellus",serif;font-size:clamp(38px,9.4vw,50px);
   line-height:1.1;margin:.7rem 0 1rem;color:var(--tinta)}
-.lugar .sede{font-family:"Marcellus",serif;font-size:clamp(15px,4vw,16.5px);margin:0 0 .4rem}
-.lugar .dir{font-size:clamp(13.5px,3.7vw,15px);color:var(--oliva);line-height:1.7;
-  max-width:28ch;margin:0 auto 1.5rem}
+.lugar .sede{font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(15px,4.2vw,17.5px);margin:0 0 .5rem;color:var(--tinta)}
+.lugar .dir{font-size:clamp(14.5px,4vw,16.5px);font-weight:500;color:var(--oliva);
+  line-height:1.75;max-width:28ch;margin:0 auto 1.6rem}
 
 .boton{display:inline-flex;align-items:center;justify-content:center;gap:11px;
   border-radius:999px;cursor:pointer;text-decoration:none;
-  font-family:"Marcellus",serif;font-size:clamp(11px,3vw,12px);
-  letter-spacing:.18em;text-transform:uppercase;
-  padding:.95rem 1.9rem;border:1.5px solid var(--laton);color:var(--laton-2);background:transparent;
+  font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11.5px,3.2vw,13px);
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:1rem 2rem;border:1.5px solid var(--laton);color:var(--laton-2);background:transparent;
   transition:background .35s ease,color .35s ease,transform .3s ease,box-shadow .3s ease}
 @media (hover:hover){.boton:hover{background:var(--laton);color:var(--papel);
   transform:translateY(-2px);box-shadow:0 8px 20px rgba(176,141,87,.28)}}
@@ -379,19 +396,21 @@ p{margin:0 0 1.1rem;font-size:clamp(15px,4vw,16.5px);line-height:1.85}
 .campo{display:block;margin:0 0 .9rem}
 .campo input,.campo select{width:100%;padding:1rem 1.3rem;
   border:1.5px solid rgba(110,122,94,.4);border-radius:999px;
-  background:rgba(255,253,249,.85);color:var(--tinta);font-family:inherit;
-  font-size:clamp(15px,4vw,16px);appearance:none;text-align:center}
+  background:rgba(255,253,249,.88);color:var(--tinta);font-family:"Montserrat",sans-serif;
+  font-weight:500;font-size:clamp(14px,3.8vw,15px);appearance:none;text-align:center}
 .campo input:focus,.campo select:focus{outline:none;border-color:var(--oliva)}
-.aviso{font-size:clamp(13px,3.5vw,14.5px);color:var(--tinta-45);font-style:italic;margin:1.3rem 0 0}
+.aviso{font-size:clamp(14.5px,3.9vw,16px);font-weight:500;color:var(--tinta-45);
+  font-style:italic;margin:1.4rem 0 0}
 
 footer{background:var(--tinta);color:rgba(251,247,240,.82);text-align:center;
   padding:clamp(3.6rem,10vh,5.5rem) 1.4rem calc(2.6rem + env(safe-area-inset-bottom));
   position:relative;overflow:hidden}
 footer .logo-pie{width:min(56vw,250px);margin:0 auto 1.8rem}
-footer small{display:block;font-family:"Marcellus",serif;font-size:clamp(9px,2.4vw,11px);
-  letter-spacing:.34em;text-transform:uppercase;color:rgba(251,247,240,.62)}
-footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,16px);
-  color:rgba(251,247,240,.62)}
+footer small{display:block;font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(10px,2.7vw,12px);letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(251,247,240,.7)}
+footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
+  font-size:clamp(16px,4.2vw,18px);color:rgba(251,247,240,.68)}
 
 /* ==========================================================================
    HORIZONTAL / PANTALLAS BAJAS
@@ -474,7 +493,16 @@ footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,1
     Confirmar asistencia
   </a>
   <div class="aparte">
-    <span class="raya-menu"></span>
+    <span class="raya-menu">
+      <i></i>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+        <path d="M12 3.4c1.6 2.3 2.4 4.1 2.4 5.5S13.3 11.6 12 12c-1.3-.4-2.4-1.7-2.4-3.1s.8-3.2 2.4-5.5z"/>
+        <path d="M12 20.6c-1.6-2.3-2.4-4.1-2.4-5.5s1.1-2.7 2.4-3.1c1.3.4 2.4 1.7 2.4 3.1s-.8 3.2-2.4 5.5z"/>
+        <path d="M3.4 12c2.3-1.6 4.1-2.4 5.5-2.4s2.7 1.1 3.1 2.4c-.4 1.3-1.7 2.4-3.1 2.4S5.7 13.6 3.4 12z"/>
+        <path d="M20.6 12c-2.3 1.6-4.1 2.4-5.5 2.4s-2.7-1.1-3.1-2.4c.4-1.3 1.7-2.4 3.1-2.4s3.2.8 5.5 2.4z"/>
+      </svg>
+      <i></i>
+    </span>
     <a href="#" id="ver-sobre">
       <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.4 3.2h6.2v13.6H2.4zM11.4 3.2h6.2v13.6h-6.2z"/><circle cx="7.2" cy="10" r=".7" fill="currentColor" stroke="none"/><circle cx="12.8" cy="10" r=".7" fill="currentColor" stroke="none"/></svg>
       Cerrar las puertas
@@ -487,35 +515,36 @@ footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,1
 <main>
 
 <!-- ==================== 01 + 02 · INICIO Y CONTADOR ==================== -->
-<div class="apertura">
-  <img class="fondo" src="assets/img/bg_main.png" alt="">
+<!-- ==================== 01 · INICIO ==================== -->
+<section id="inicio">
+  <img class="paisaje" src="assets/img/bg_main.png" alt="">
   <img class="columna col-i" src="assets/img/column_left.png" alt="">
   <img class="columna col-d" src="assets/img/column_right.png" alt="">
 
-  <section id="inicio">
-    <div class="caja">
-      <p class="antetitulo anim abre" style="--r:0">Nuestra boda</p>
-      <div class="separador anim" style="--r:1"><i></i><b></b><i></i></div>
-      <img class="logo-novios anim crece" style="--r:2" src="assets/img/logo.png" alt="Vanessa y Manuel">
-      <p class="fecha anim abre" style="--r:4">14 · Noviembre · 2026</p>
-      <p class="lema anim difumina" style="--r:5">Una nueva historia comienza.</p>
-    </div>
-    <a href="#contador" data-ir="contador" class="baja anim" style="--r:6" aria-label="Continuar">
-      <svg width="24" height="13" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 1l10 10L21 1"/></svg>
-    </a>
-  </section>
+  <div class="caja">
+    <p class="antetitulo anim abre" style="--r:0">Nuestra boda</p>
+    <div class="separador anim" style="--r:1"><i></i><b></b><i></i></div>
+    <img class="logo-novios anim crece" style="--r:2" src="assets/img/logo.png" alt="Vanessa y Manuel">
+    <p class="fecha anim abre" style="--r:4">14 · Noviembre · 2026</p>
+    <p class="lema anim difumina" style="--r:5">Una nueva historia comienza.</p>
+  </div>
+  <a href="#contador" data-ir="contador" class="baja anim" style="--r:6" aria-label="Continuar">
+    <svg width="26" height="14" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1 1l10 10L21 1"/></svg>
+  </a>
+</section>
 
-  <section id="contador">
-    <div class="separador anim" style="--r:0"><i></i><b></b><i></i></div>
-    <p class="titulo anim abre" style="--r:1">Falta poco para nuestro gran día</p>
-    <div class="reloj anim" style="--r:2">
-      <div class="unidad"><b id="dd">—</b><span>Días</span></div>
-      <div class="unidad"><b id="hh">—</b><span>Horas</span></div>
-      <div class="unidad"><b id="mm">—</b><span>Minutos</span></div>
-      <div class="unidad"><b id="ss">—</b><span>Segundos</span></div>
-    </div>
-  </section>
-</div>
+<!-- ==================== 02 · CUENTA REGRESIVA ==================== -->
+<section id="contador">
+  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+  <div class="separador anim" style="--r:0"><i></i><b></b><i></i></div>
+  <p class="titulo anim abre" style="--r:1">Falta poco para nuestro gran día</p>
+  <div class="reloj anim" style="--r:2">
+    <div class="unidad"><b id="dd">—</b><span>Días</span></div>
+    <div class="unidad"><b id="hh">—</b><span>Horas</span></div>
+    <div class="unidad"><b id="mm">—</b><span>Minutos</span></div>
+    <div class="unidad"><b id="ss">—</b><span>Segundos</span></div>
+  </div>
+</section>
 
 <!-- ==================== 03 · PUENTE ==================== -->
 <section class="escena-foto" id="puente">
@@ -593,7 +622,7 @@ footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,1
 
 <!-- ==================== 07 · IMAGEN ==================== -->
 <section class="escena-foto">
-  <img class="fondo" src="assets/img/image_02.jpeg" alt="" loading="lazy">
+  <img class="fondo" src="assets/img/image_02.png" alt="" loading="lazy">
   <p class="frase anim">Celebremos lo extraordinario de estar juntos.</p>
 </section>
 
@@ -611,7 +640,7 @@ footer .gracias{margin:1.8rem 0 0;font-style:italic;font-size:clamp(14px,3.8vw,1
 
 <!-- ==================== 09 · IMAGEN ==================== -->
 <section class="escena-foto">
-  <img class="fondo" src="assets/img/image_03.jpeg" alt="" loading="lazy">
+  <img class="fondo" src="assets/img/image_03.png" alt="" loading="lazy">
   <p class="frase anim">Más que un día, una vida juntos.</p>
 </section>
 
