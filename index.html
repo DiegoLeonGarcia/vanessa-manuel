@@ -46,7 +46,8 @@
   --curva:      cubic-bezier(.22,.61,.36,1);
 
   /* — LAS PUERTAS — */
-  --sello-w:    clamp(74px, 33%, 180px);  /* ancho del sello sobre la costura */
+  --sello-w:    clamp(74px, 12.5vmin, 158px); /* ancho del sello sobre la costura */
+  --aire-sello: clamp(1.5rem, 4.6vh, 3.2rem); /* respiro entre el sello y los textos */
 
   /* — GEOMETRÍA DEL INICIO — */
   --col-w:      clamp(112px, 26vw, 250px);
@@ -80,50 +81,49 @@ p{margin:0 0 1.1rem}
 .filete i{width:5px;height:5px;background:var(--laton);transform:rotate(45deg);display:block}
 
 /* ==========================================================================
-   00 · LAS PUERTAS  —  versión simple a propósito
+   00 · LAS PUERTAS  —  simple a propósito
    --------------------------------------------------------------------------
-   Dos paneles. Cada uno ocupa su mitad de la pantalla y se corre hacia su
-   lado. Sin 3D, sin marco anidado, sin perspectiva. Todo vive en --p:
-   0 = cerradas, 1 = abiertas. No hay nada que se pueda desalinear.
+   Los dos paneles usan LA MISMA IMAGEN (gates_original), cada uno mostrando
+   su mitad. Al ser un solo archivo, la costura es matemáticamente perfecta:
+   no hay dos escalados distintos que puedan desfasarse.
+   Se toca y se abren. Nada más. Todo vive en --p (0 cerradas, 1 abiertas).
    ========================================================================== */
 #puertas{
   --p:0;
-  position:fixed;inset:0;z-index:70;overflow:hidden;
-  touch-action:none;cursor:pointer;
+  /* la imagen completa, cubriendo la ventana como una sola pieza */
+  --imgW:max(100vw, 100svh * .728);
+  --imgH:calc(var(--imgW) / .728);
+  --ox:calc((100vw - var(--imgW)) / 2);
+  --oy:calc((100svh - var(--imgH)) / 2);
+  position:fixed;inset:0;z-index:70;overflow:hidden;cursor:pointer;
 }
 #puertas.fuera{pointer-events:none;visibility:hidden}
 
 .hoja{
-  position:absolute;top:0;bottom:0;width:50.4%;
-  background-repeat:no-repeat;background-size:cover;
+  position:absolute;top:0;bottom:0;width:calc(50% + 1px);
+  background-image:url("assets/img/gates_original.png");
+  background-repeat:no-repeat;
+  background-size:var(--imgW) var(--imgH);
   will-change:transform;
 }
-.hoja-i{
-  left:0;
-  background-image:url("assets/img/gate_left.png");
-  background-position:right center;
-  transform:translateX(calc(var(--p) * -101%));
-  box-shadow:7px 0 26px rgba(58,38,14,.30);
-}
-.hoja-d{
-  right:0;
-  background-image:url("assets/img/gate_right.png");
-  background-position:left center;
-  transform:translateX(calc(var(--p) * 101%));
-  box-shadow:-7px 0 26px rgba(58,38,14,.30);
-}
+.hoja-i{left:0;
+  background-position:var(--ox) var(--oy);
+  transform:translateX(calc(var(--p) * -101%))}
+.hoja-d{right:0;
+  background-position:calc(var(--ox) - 50vw + 1px) var(--oy);
+  transform:translateX(calc(var(--p) * 101%))}
 
 /* Luz de atardecer sobre el papel */
 .hoja::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light}
 .hoja-i::before{background:linear-gradient(139deg,
-  rgba(255,206,136,.92) 0%,rgba(255,212,164,.30) 48%,rgba(96,54,14,.24) 100%)}
+  rgba(255,206,136,.88) 0%,rgba(255,212,164,.28) 48%,rgba(96,54,14,.22) 100%)}
 .hoja-d::before{background:linear-gradient(139deg,
-  rgba(255,214,168,.40) 0%,rgba(255,212,164,.10) 36%,rgba(96,54,14,.38) 100%)}
+  rgba(255,214,168,.38) 0%,rgba(255,212,164,.09) 36%,rgba(96,54,14,.34) 100%)}
 
-/* La sombra de la rendija */
-.hoja::after{content:"";position:absolute;top:0;bottom:0;width:8%;pointer-events:none}
-.hoja-i::after{right:0;background:linear-gradient(90deg,rgba(56,36,12,0),rgba(56,36,12,.30))}
-.hoja-d::after{left:0;background:linear-gradient(270deg,rgba(56,36,12,0),rgba(56,36,12,.30))}
+/* La rendija: en píxeles fijos y muy tenue, para que no se vea hundido */
+.hoja::after{content:"";position:absolute;top:0;bottom:0;width:26px;pointer-events:none}
+.hoja-i::after{right:0;background:linear-gradient(90deg,rgba(74,52,24,0),rgba(74,52,24,.13))}
+.hoja-d::after{left:0;background:linear-gradient(270deg,rgba(74,52,24,0),rgba(74,52,24,.13))}
 
 /* El sello: vive en el panel derecho y se va entero con él */
 .sello{
@@ -131,23 +131,34 @@ p{margin:0 0 1.1rem}
   width:var(--sello-w);aspect-ratio:1278/1230;
   transform:translate(-50%,-50%);
   background:url("assets/img/seal.png") center/contain no-repeat;
-  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.48)) drop-shadow(9px 18px 22px rgba(56,34,8,.22));
+  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.46)) drop-shadow(9px 18px 22px rgba(56,34,8,.20));
 }
 
-/* Textos, independientes de los paneles */
-.sobre-textos{position:absolute;left:0;right:0;top:50%;z-index:3;text-align:center;
-  pointer-events:none;opacity:calc((.20 - var(--p)) / .15)}
-.para{margin:0 0 clamp(4.4rem,12vh,8rem)}
-.para-rotulo{font-family:"Marcellus",serif;margin:0;color:rgba(110,122,94,.9);
-  font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase}
+/* Textos: colocados a partir del mismo número que mide el sello, así
+   nunca se le encima por grande que se ponga */
+.para,.llamada{position:absolute;left:0;right:0;z-index:3;text-align:center;
+  pointer-events:none;opacity:calc((.22 - var(--p)) / .16)}
+.para{bottom:calc(50% + var(--sello-w) * .5 + var(--aire-sello))}
+.llamada{top:calc(50% + var(--sello-w) * .5 + var(--aire-sello))}
+.para-rotulo{font-family:"Marcellus",serif;margin:0;color:rgba(104,116,88,.95);
+  font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase;
+  text-shadow:0 0 16px rgba(255,251,242,.95),0 0 30px rgba(255,251,242,.8)}
 .para-nombre{font-style:italic;margin:.3rem 0 0;color:var(--tinta);
-  font-size:clamp(1.05rem,3.6vw,1.35rem)}
-.llamada{margin:clamp(4.2rem,11.5vh,7.6rem) 0 0}
-.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:rgba(86,72,44,.94);
-  font-size:clamp(.74rem,2.7vw,.94rem);letter-spacing:.36em;text-transform:uppercase}
-.llamada .flecha{margin:.75rem auto 0;color:rgba(142,110,63,.9);
-  animation:subir 2.4s ease-in-out infinite}
-@keyframes subir{0%,100%{transform:translateY(3px);opacity:.45}50%{transform:translateY(-3px);opacity:1}}
+  font-size:clamp(1.05rem,3.6vw,1.35rem);
+  text-shadow:0 0 18px rgba(255,251,242,.95),0 0 34px rgba(255,251,242,.85)}
+.llamada b{display:block;font-family:"Marcellus",serif;font-weight:400;color:rgba(78,66,40,.96);
+  font-size:clamp(.76rem,2.7vw,.96rem);letter-spacing:.36em;text-transform:uppercase;
+  text-shadow:0 0 18px rgba(255,251,242,.98),0 0 36px rgba(255,251,242,.9),0 0 60px rgba(255,251,242,.7)}
+.llamada .flecha{margin:.8rem auto 0;color:rgba(142,110,63,.95);
+  filter:drop-shadow(0 0 12px rgba(255,251,242,.95));
+  animation:subir 3.2s ease-in-out infinite}
+@keyframes subir{0%,100%{transform:translateY(3px);opacity:.5}50%{transform:translateY(-3px);opacity:1}}
+
+/* Botón plano para volver a la portada */
+.btn-plano{width:44px;height:44px;display:grid;place-items:center;color:var(--tinta);
+  filter:drop-shadow(0 0 6px rgba(255,252,246,.95)) drop-shadow(0 1px 2px rgba(255,252,246,.9));
+  transition:opacity .3s ease,transform .3s ease;opacity:.78}
+.btn-plano:hover{opacity:1;transform:scale(1.06)}
 
 /* ==========================================================================
    BARRA Y MENÚ LATERAL
@@ -378,15 +389,13 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
   <div class="hoja hoja-i"></div>
   <div class="hoja hoja-d"><div class="sello"></div></div>
 
-  <div class="sobre-textos">
-    <div class="para" id="para" hidden>
-      <p class="para-rotulo">Para</p>
-      <p class="para-nombre" id="para-nombre"></p>
-    </div>
-    <div class="llamada">
-      <b>Toca para abrir</b>
-      <svg class="flecha" width="26" height="14" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
-    </div>
+  <div class="para" id="para" hidden>
+    <p class="para-rotulo">Para</p>
+    <p class="para-nombre" id="para-nombre"></p>
+  </div>
+  <div class="llamada">
+    <b>Toca para abrir</b>
+    <svg class="flecha" width="26" height="14" viewBox="0 0 22 12" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M1 11l10-10 10 10"/></svg>
   </div>
 </div>
 
@@ -396,8 +405,12 @@ footer .firma{margin:1.6rem 0 0;font-size:.74rem;font-style:italic;color:rgba(25
     <svg width="18" height="11" viewBox="0 0 18 11" fill="none" stroke="currentColor" stroke-width="1.1"><path d="M0 .5h18M0 5.5h18M0 10.5h12"/></svg>
   </button>
   <div style="display:flex;gap:.6rem">
-  <button class="btn-icono" id="btn-puertas" aria-label="Volver a la portada">
-    <img src="assets/img/seal.png" alt="" style="width:21px;height:21px;object-fit:contain">
+  <button class="btn-plano" id="btn-puertas" aria-label="Volver a la portada">
+    <svg width="21" height="21" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.15">
+      <path d="M2.4 3.2h6.2v13.6H2.4zM11.4 3.2h6.2v13.6h-6.2z"/>
+      <circle cx="7.2" cy="10" r=".7" fill="currentColor" stroke="none"/>
+      <circle cx="12.8" cy="10" r=".7" fill="currentColor" stroke="none"/>
+    </svg>
   </button>
   <button class="btn-icono" id="btn-musica" aria-label="Reproducir música" aria-pressed="false">
     <svg id="ico-play" width="13" height="14" viewBox="0 0 13 14" fill="currentColor"><path d="M1 1.2 12 7 1 12.8V1.2Z"/></svg>
@@ -641,7 +654,8 @@ function animarP(destino, ms, luego){
   var ini = p, t0 = null;
   function paso(ahora){
     if (t0 === null) t0 = ahora;
-    var k = Math.min(1,(ahora - t0)/ms), e = 1 - Math.pow(1-k,3);
+    var k = Math.min(1,(ahora - t0)/ms);
+    var e = k < .5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3)/2;
     setP(ini + (destino-ini)*e);
     if (k < 1) raf = requestAnimationFrame(paso); else if (luego) luego();
   }
@@ -673,7 +687,7 @@ function callar(){
 function abrir(){
   if (abierto) return;
   limpiar(); clearTimeout(relojOcio);
-  animarP(1, 980, function(){
+  animarP(1, 1850, function(){
     abierto = true;
     escena.classList.add("fuera");
     cuerpo.classList.remove("sin-scroll");
@@ -689,51 +703,14 @@ function cerrar(){
   cuerpo.classList.add("sin-scroll");
   cuerpo.classList.remove("dentro");
   callar();
-  animarP(0, 900, ocioso);
+  animarP(0, 1750, ocioso);
 }
 
-/* ---------- Arrastrar las puertas (dedo o mouse) ---------- */
-var x0=0, arrastrando=false, movido=0;
-escena.addEventListener("pointerdown", function(e){
-  if (abierto) return;
-  arrastrando = true; movido = 0; x0 = e.clientX; p0 = p;
-  cancelAnimationFrame(raf); clearTimeout(relojOcio);
-  try{ escena.setPointerCapture(e.pointerId); }catch(err){}
-});
-escena.addEventListener("pointermove", function(e){
-  if (!arrastrando || abierto) return;
-  var dx = e.clientX - x0;
-  movido = Math.abs(dx);
-  setP(p0 + movido/190);
-  if (p >= 1){ arrastrando = false; abrir(); }
-});
-function soltar(){
-  if (!arrastrando || abierto) return;
-  arrastrando = false;
-  if (p > .22) abrir(); else { animarP(0, 420); ocioso(); }
-}
-escena.addEventListener("pointerup", soltar);
-escena.addEventListener("pointercancel", soltar);
-escena.addEventListener("click", function(){ if (!abierto && movido < 8) abrir(); });
+/* ---------- Se toca y se abre. Nada más ---------- */
+escena.addEventListener("click", function(){ if (!abierto) abrir(); });
 escena.addEventListener("keydown", function(e){
   if (e.key === "Enter" || e.key === " "){ e.preventDefault(); abrir(); }
 });
-
-/* ---------- Rueda y trackpad: también abren ---------- */
-var relojRueda = null;
-window.addEventListener("wheel", function(e){
-  if (abierto) return;
-  e.preventDefault();
-  cancelAnimationFrame(raf); clearTimeout(relojOcio);
-  setP(p + Math.abs(e.deltaY)/820);
-  if (p >= .55){ abrir(); return; }
-  clearTimeout(relojRueda);
-  relojRueda = setTimeout(function(){
-    if (!abierto && p < .55){ animarP(0, 520); ocioso(); }
-  }, 260);
-}, {passive:false});
-
-/* ---------- Botón discreto para volver a la portada ---------- */
 document.getElementById("btn-puertas").addEventListener("click", cerrar);
 
 /* ---------- A los 6 s cerradas, las puertas respiran ---------- */
@@ -742,7 +719,7 @@ function ocioso(){
   clearTimeout(relojOcio);
   relojOcio = setTimeout(function(){
     if (abierto || arrastrando) return;
-    animarP(.07, 620, function(){ animarP(0, 720, ocioso); });
+    animarP(.055, 980, function(){ animarP(0, 1150, ocioso); });
   }, 6000);
 }
 ocioso();
