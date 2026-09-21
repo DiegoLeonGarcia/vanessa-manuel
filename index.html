@@ -148,13 +148,21 @@ p{margin:0 0 1.1rem}
 @keyframes abre-i{0%,100%{transform:translateX(3px);opacity:.5}50%{transform:translateX(-4px);opacity:1}}
 @keyframes abre-d{0%,100%{transform:translateX(-3px);opacity:.5}50%{transform:translateX(4px);opacity:1}}
 
-.para{top:calc(var(--oy) + var(--imgH) * .888)}
-.para-rotulo{font-family:"Marcellus",serif;margin:0;color:#6E7A5E;
-  font-size:clamp(.6rem,1.9vw,.72rem);letter-spacing:.42em;text-transform:uppercase;
-  text-shadow:0 0 14px rgba(255,252,246,1),0 0 28px rgba(255,252,246,.9)}
-.para-nombre{font-style:italic;margin:.3rem 0 0;color:var(--tinta);
-  font-size:clamp(1.02rem,3.4vw,1.3rem);
-  text-shadow:0 0 16px rgba(255,252,246,1),0 0 32px rgba(255,252,246,.9)}
+/* A quién va dirigida: justo debajo del sello, como un sobre con nombre.
+   Todo se queda por encima del 87% del alto, porque en iPhone la barra de
+   Safari flota sobre la parte baja de la pantalla. */
+.para{top:calc(var(--oy) + var(--imgH) * .695)}
+body.con-invitado .llamada{top:calc(var(--oy) + var(--imgH) * .818)}
+.para p{margin:0;text-shadow:0 0 12px rgba(255,252,246,1),0 0 26px rgba(255,252,246,.9)}
+.para-rotulo{font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(10px,2.6vw,12px);letter-spacing:.42em;text-transform:uppercase;color:#65705A}
+.para-nombre{font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;
+  font-size:clamp(22px,5.8vw,32px);line-height:1.2;color:var(--tinta);margin-top:.2rem!important}
+.para-lugares{font-family:"Montserrat",sans-serif;font-weight:500;
+  font-size:clamp(10px,2.7vw,12px);letter-spacing:.18em;text-transform:uppercase;
+  color:#65705A;margin-top:.4rem!important}
+.nota-campo{margin:2px 0 14px;font-family:"Montserrat",sans-serif;font-weight:500;
+  font-size:13px;line-height:1.6;color:#65705A;text-align:center}
 
 
 
@@ -513,8 +521,6 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
    HORIZONTAL / PANTALLAS BAJAS
    ========================================================================== */
 @media (orientation:landscape) and (max-height:560px){
-  .llamada{margin-top:clamp(3rem,10vh,5rem)}
-  .para{margin-bottom:clamp(3rem,10vh,5rem)}
   #inicio{min-height:100dvh;padding-top:4.5rem}
   .logo-novios{width:min(46vw,300px);margin:.6rem auto .9rem}
   .lema{margin-top:.8rem}
@@ -540,6 +546,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
   <div class="para" id="para" hidden>
     <p class="para-rotulo">Para</p>
     <p class="para-nombre" id="para-nombre"></p>
+    <p class="para-lugares" id="para-lugares" hidden></p>
   </div>
 </div>
 
@@ -759,6 +766,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
         <option value="" disabled selected>¿Cuántos asisten?</option>
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
       </select></label>
+      <p class="nota-campo" id="nota-lugares" hidden></p>
       <button class="boton solido anim sube" style="--r:5" id="enviar">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 00-6.9 12L0 16l4.1-1.1A8 8 0 108 0zm4.6 11.3c-.2.6-1.1 1.1-1.6 1.1-.4 0-.9.2-3.1-.7-2.6-1.1-4.2-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.6-.3h.5c.2 0 .4 0 .5.4l.8 1.9c.1.1.1.3 0 .5l-.3.4-.3.3c-.1.1-.2.2 0 .5.2.3.7 1.2 1.6 2 1.1.9 1.9 1.2 2.2 1.4.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.8.9c.2.1.4.2.4.3v.8z"/></svg>
         Confirmar por WhatsApp
@@ -790,14 +798,40 @@ var escena  = document.getElementById("puertas"),
 var q = new URLSearchParams(location.search),
     invitado = (q.get("invitado")||"").trim(),
     pases    = (q.get("pases")||"").trim();
+var lugares = parseInt(pases, 10);
+if (!(lugares > 0)) lugares = 0;
+
 if (invitado){
-  document.getElementById("para-nombre").textContent =
-    invitado + (pases ? " · " + pases + (pases==="1" ? " lugar" : " lugares") : "");
+  /* en las puertas: a quién va dirigida */
+  document.getElementById("para-nombre").textContent = invitado;
   document.getElementById("para").hidden = false;
+  cuerpo.classList.add("con-invitado");
+  /* en la confirmación: el nombre ya escrito */
+  document.getElementById("nombre").value = invitado;
 }
-if (pases){
+if (lugares){
+  var textoLugares = lugares === 1 ? "1 lugar apartado para ti" : lugares + " lugares apartados para ti";
+  var pl = document.getElementById("para-lugares");
+  pl.textContent = textoLugares;
+  pl.hidden = !invitado;
+
+  /* el selector solo ofrece hasta los lugares apartados */
   var sel = document.getElementById("pases");
-  for (var i=0;i<sel.options.length;i++) if (sel.options[i].text===pases) sel.selectedIndex=i;
+  var inicial = sel.options[0];
+  sel.innerHTML = "";
+  sel.appendChild(inicial);
+  for (var n = 1; n <= lugares; n++){
+    var op = document.createElement("option");
+    op.value = n; op.textContent = n;
+    sel.appendChild(op);
+  }
+  sel.value = String(lugares);
+
+  var nota = document.getElementById("nota-lugares");
+  nota.textContent = lugares === 1
+    ? "Apartamos 1 lugar para ti."
+    : "Apartamos " + lugares + " lugares para ti.";
+  nota.hidden = false;
 }
 
 /* ---------- LAS PUERTAS -------------------------------------------------
@@ -1089,8 +1123,8 @@ document.getElementById("enviar").addEventListener("click", function(){
   var n = document.getElementById("nombre").value.trim(),
       q = document.getElementById("pases").value;
   if (!n){ document.getElementById("nombre").focus(); return; }
-  var m = "¡Hola! Soy " + n + ". Confirmo mi asistencia a la boda de Vanessa y Manuel"
-        + (q ? " con " + q + (q==="1" ? " persona." : " personas.") : ".");
+  var m = "¡Hola! Confirmo la asistencia de " + n + " a la boda de Vanessa y Manuel"
+        + (q ? " (" + q + (q==="1" ? " persona)." : " personas).") : ".");
   window.open("https://wa.me/524181011391?text=" + encodeURIComponent(m), "_blank", "noopener");
 });
 
