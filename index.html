@@ -48,7 +48,7 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      clamp(66px, 16vw, 210px);   /* ancho de las columnas */
+  --col-w:      clamp(80px, 21vw, 224px);   /* ancho de las columnas */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -290,10 +290,10 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 #inicio .paisaje{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;object-position:center bottom;z-index:0}
 
-/* columnas siempre completas: se ajustan al alto y se ven enteras */
+/* columnas de piso a techo: la base siempre visible, se recorta por arriba */
 .columna{position:absolute;top:0;bottom:0;z-index:1;pointer-events:none;
   width:var(--col-w);height:100%;
-  object-fit:contain;object-position:center bottom}
+  object-fit:cover;object-position:center bottom}
 .col-i{left:0}
 .col-d{right:0}
 
@@ -366,14 +366,14 @@ section{padding:clamp(4.5rem,12vh,7.5rem) clamp(1.2rem,5vw,2rem);position:relati
 .texturada::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;z-index:2;
   background:linear-gradient(90deg,transparent,rgba(155,170,150,.55),transparent)}
 .icono-sec{color:var(--laton-2);margin:0 auto 1.3rem;display:block;
-  width:clamp(38px,9vw,50px);height:auto}
-.rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(12px,3.4vw,15px);
-  letter-spacing:.32em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.2rem}
-h2{font-family:"Marcellus",serif;font-size:clamp(30px,8vw,46px);font-weight:400;
-  line-height:1.2;margin:0 0 1.5rem}
-p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(18px,5vw,22px);line-height:1.8}
+  width:clamp(34px,8vw,44px);height:auto}
+.rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11.5px,3.2vw,14px);
+  letter-spacing:.3em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.2rem}
+h2{font-family:"Marcellus",serif;font-size:clamp(27px,6.8vw,37px);font-weight:400;
+  line-height:1.25;margin:0 0 1.4rem}
+p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(17px,4.6vw,20px);line-height:1.82}
 
-.escena-foto{position:relative;min-height:clamp(380px,72vh,620px);display:grid;place-items:center;
+.escena-foto{position:relative;min-height:clamp(480px,88vh,820px);display:grid;place-items:center;
   text-align:center;overflow:hidden;padding:clamp(3rem,9vh,5rem) 1.4rem}
 .escena-foto .fondo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .escena-foto::after{content:"";position:absolute;inset:0;z-index:1;
@@ -937,8 +937,8 @@ Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ o
       ? (Math.random() < .5 ? 1 + Math.random()*22 : 77 + Math.random()*22)
       : 30 + Math.random()*40;
     im.style.left = x.toFixed(1) + "%";
-    im.style.width = (orilla ? 26 + Math.random()*20 : 18 + Math.random()*12) + "px";
-    im.style.setProperty("--op", (orilla ? .7 + Math.random()*.3 : .45 + Math.random()*.25).toFixed(2));
+    im.style.width = (orilla ? 14 + Math.random()*10 : 10 + Math.random()*6) + "px";
+    im.style.setProperty("--op", "1");
     if (i % 4 === 0) im.classList.add("delante");
     im.style.setProperty("--deriva", (Math.random()*7 - 3).toFixed(1) + "vw");
     im.style.setProperty("--giro", Math.round(180 + Math.random()*260) + "deg");
@@ -954,7 +954,7 @@ Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ o
   var capas = [];
   Array.prototype.forEach.call(document.querySelectorAll(".escena-foto .fondo"), function(el){
     el.style.willChange = "transform";
-    capas.push({el:el, k:.12});
+    capas.push({el:el, k:.20});
   });
   var pendiente = false;
   function mover(){
@@ -964,7 +964,7 @@ Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ o
       var r = c.el.parentElement.getBoundingClientRect();
       if (r.bottom < -80 || r.top > alto + 80) return;
       var centro = r.top + r.height/2 - alto/2;
-      c.el.style.transform = "translate3d(0," + (-centro * c.k).toFixed(1) + "px,0) scale(1.18)";
+      c.el.style.transform = "translate3d(0," + (-centro * c.k).toFixed(1) + "px,0) scale(1.30)";
     });
   }
   window.addEventListener("scroll", function(){
