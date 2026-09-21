@@ -127,7 +127,6 @@ p{margin:0 0 1.1rem}
   width:var(--sello-w);aspect-ratio:1278/1230;
   transform:translate(-50%,-50%);
   background:url("assets/img/seal.png") center/contain no-repeat;
-  filter:drop-shadow(3px 7px 9px rgba(56,34,8,.42));
 }
 
 /* Textos, en la banda limpia del diseño */
@@ -328,9 +327,27 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .petalo.delante{z-index:4}
 @keyframes caer{
   0%{opacity:0;transform:translate3d(0,-12vh,0) rotate(0deg)}
-  12%{opacity:var(--op,.8)}
-  88%{opacity:var(--op,.8)}
+  10%{opacity:1}
+  86%{opacity:1}
   100%{opacity:0;transform:translate3d(var(--deriva,4vw),118vh,0) rotate(var(--giro,300deg))}
+}
+/* Ráfaga: sale disparado del costado y la gravedad lo va venciendo */
+.petalo.rafaga{top:auto;bottom:var(--desde,42%)}
+@keyframes rafaga-i{
+  0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg)}
+  8%{opacity:1}
+  22%{transform:translate3d(calc(var(--empuje,26vw) * .55),-7vh,0) rotate(90deg)}
+  45%{transform:translate3d(calc(var(--empuje,26vw) * .85),-2vh,0) rotate(180deg)}
+  86%{opacity:1}
+  100%{opacity:0;transform:translate3d(var(--empuje,26vw),62vh,0) rotate(var(--giro,340deg))}
+}
+@keyframes rafaga-d{
+  0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg)}
+  8%{opacity:1}
+  22%{transform:translate3d(calc(var(--empuje,26vw) * -.55),-7vh,0) rotate(-90deg)}
+  45%{transform:translate3d(calc(var(--empuje,26vw) * -.85),-2vh,0) rotate(-180deg)}
+  86%{opacity:1}
+  100%{opacity:0;transform:translate3d(calc(var(--empuje,26vw) * -1),62vh,0) rotate(var(--giro,340deg))}
 }
 
 /* ==========================================================================
@@ -342,6 +359,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   object-fit:cover;opacity:.5;z-index:0}
 #contador>*:not(.textura){position:relative;z-index:1}
 #contador .separador{margin-bottom:clamp(2.2rem,6vh,3.6rem)}
+#lugares .separador{margin:0 auto clamp(2.4rem,6vh,3.6rem)}
 #contador .titulo{font-family:"Montserrat",sans-serif;font-weight:600;
   white-space:nowrap;text-transform:uppercase;
   font-size:clamp(10px,2.7vw,13.5px);letter-spacing:clamp(.1em,.55vw,.28em);
@@ -367,6 +385,7 @@ section{padding:clamp(4.5rem,12vh,7.5rem) clamp(1.2rem,5vw,2rem);position:relati
   background:linear-gradient(90deg,transparent,rgba(155,170,150,.55),transparent)}
 .icono-sec{color:var(--laton-2);margin:0 auto 1.3rem;display:block;
   width:clamp(34px,8vw,44px);height:auto}
+.icono-sec.chico{width:clamp(30px,7vw,38px)}
 .rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11.5px,3.2vw,14px);
   letter-spacing:.3em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.2rem}
 h2{font-family:"Marcellus",serif;font-size:clamp(27px,6.8vw,37px);font-weight:400;
@@ -400,7 +419,7 @@ p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(17px,4.6vw,20px);line-height
   .lugares .raya{display:block;background:linear-gradient(180deg,transparent,rgba(110,122,94,.5),transparent);min-height:250px}
 }
 .lugar{text-align:center}
-.lugar .hora{font-family:"Marcellus",serif;font-size:clamp(42px,10.4vw,58px);
+.lugar .hora{font-family:"Marcellus",serif;font-size:clamp(29px,7.2vw,39px);
   line-height:1.1;margin:.7rem 0 1rem;color:var(--tinta)}
 .lugar .sede{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(16.5px,4.6vw,19px);margin:0 0 .6rem;color:var(--tinta)}
@@ -511,15 +530,15 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
   </a>
   <a href="#lugares" data-ir="lugares">
     <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.6" width="14" height="12.4" rx="2"/><path d="M6.8 2.6v3.6M13.2 2.6v3.6M3 8.8h14"/></svg>
-    Ceremonia y recepción
+    Lugar y hora
   </a>
   <a href="#vestimenta" data-ir="vestimenta">
     <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 2.8L10 5l2.4-2.2 3.8 2.4-1.9 3-1.3-.7v9.7H7V7.5l-1.3.7-1.9-3z"/></svg>
-    Código de vestimenta
+    Vestimenta
   </a>
   <a href="#confirmar" data-ir="confirmar">
     <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4.8" width="14.8" height="10.4" rx="2"/><path d="M3.2 5.9L10 10.6l6.8-4.7"/></svg>
-    Confirmar asistencia
+    Asistencia
   </a>
   <div class="aparte">
     <span class="raya-menu">
@@ -534,7 +553,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
     </span>
     <a href="#" id="ver-sobre">
       <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.4 3.2h6.2v13.6H2.4zM11.4 3.2h6.2v13.6h-6.2z"/><circle cx="7.2" cy="10" r=".7" fill="currentColor" stroke="none"/><circle cx="12.8" cy="10" r=".7" fill="currentColor" stroke="none"/></svg>
-      Cerrar las puertas
+      Cerrar invitación
     </a>
   </div>
 </nav>
@@ -585,7 +604,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 <section class="texturada" id="mensaje">
   <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
-    <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><rect x="1.5" y="3.5" width="13" height="9"/><path d="M1.5 4.5L8 9l6.5-4.5"/></svg>
+    <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16.6S3.8 12.8 3.8 8.8A3.3 3.3 0 0110 6.8a3.3 3.3 0 016.2 2c0 4-6.2 7.8-6.2 7.8z"/></svg>
     <p class="rotulo anim" style="--r:1">Un día muy especial</p>
     <h2 class="anim" style="--r:2">Queremos celebrar contigo</h2>
     <p class="anim" style="--r:3">Queremos compartir contigo uno de los capítulos más importantes de nuestra historia. Tu presencia hace la diferencia y nos llenará el corazón.</p>
@@ -598,7 +617,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 <section class="texturada" id="padres">
   <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
-    <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M8 13.5S2.5 10.3 2.5 6.6A3 3 0 018 5a3 3 0 015.5 1.6c0 3.7-5.5 6.9-5.5 6.9Z"/></svg>
+    <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.6" cy="10" r="4.9"/><circle cx="12.4" cy="10" r="4.9"/></svg>
     <p class="rotulo anim" style="--r:1">Con su bendición</p>
     <h2 class="anim" style="--r:2">Quienes caminan con nosotros</h2>
     <div class="padres anim" style="--r:3">
@@ -619,11 +638,15 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 <section class="texturada" id="lugares">
   <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja">
-    <p class="rotulo centro anim">Sábado 14 de noviembre</p>
-    <div class="filete anim" style="--r:1"><i></i></div>
+    <div class="centro">
+      <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.6" width="14" height="12.4" rx="2"/><path d="M6.8 2.6v3.6M13.2 2.6v3.6M3 8.8h14"/></svg>
+      <p class="rotulo anim" style="--r:1">Sábado 14 de noviembre</p>
+      <h2 class="anim" style="--r:2">Lugar y hora</h2>
+    </div>
+    <div class="separador anim" style="--r:3"><i></i><b></b><i></i></div>
     <div class="lugares">
       <div class="lugar anim" style="--r:2">
-        <svg class="icono-sec" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 14V7l5-4.5L13 7v7z"/><path d="M8 2.6V.9M6.7 5.3h2.6M8 9v3M6.6 10.4h2.8"/></svg>
+        <svg class="icono-sec chico" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 14V7l5-4.5L13 7v7z"/><path d="M8 2.6V.9M6.7 5.3h2.6M8 9v3M6.6 10.4h2.8"/></svg>
         <p class="rotulo">Ceremonia religiosa</p>
         <p class="hora">4:00 pm</p>
         <p class="sede">Catedral de Toluca</p>
@@ -635,7 +658,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
       </div>
       <div class="raya"></div>
       <div class="lugar anim" style="--r:3">
-        <svg class="icono-sec" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 2h8l-1 4a3 3 0 01-6 0z"/><path d="M8 9v4M5.6 13.4h4.8"/></svg>
+        <svg class="icono-sec chico" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 2h8l-1 4a3 3 0 01-6 0z"/><path d="M8 9v4M5.6 13.4h4.8"/></svg>
         <p class="rotulo">Recepción</p>
         <p class="hora">6:00 pm</p>
         <p class="sede">Salón HILDA</p>
@@ -659,8 +682,8 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 <section class="texturada" id="vestimenta">
   <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
-    <svg class="icono-sec anim" width="28" height="28" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 1.5l2 2 2-2M5 14l1.6-8L5 4.3 8 3.5l3 .8-1.6 1.7L11 14z"/></svg>
-    <p class="rotulo anim" style="--r:1">Código de vestimenta</p>
+    <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 2.8L10 5l2.4-2.2 3.8 2.4-1.9 3-1.3-.7v9.7H7V7.5l-1.3.7-1.9-3z"/></svg>
+    <p class="rotulo anim" style="--r:1">Vestimenta</p>
     <p class="etiqueta anim" style="--r:2">Formal</p>
     <div class="filete anim" style="--r:3"><i></i></div>
     <p class="anim" style="--r:4">Les pedimos con cariño reservar el blanco para la novia y evitar el color rojo. Tu estilo también forma parte de esta historia.</p>
@@ -677,8 +700,8 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 <section class="texturada" id="confirmar">
   <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="caja centro">
-    <svg class="icono-sec anim" width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 8.4l3.6 3.6L14 3.6"/></svg>
-    <p class="rotulo anim" style="--r:1">Confirma tu asistencia</p>
+    <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4.8" width="14.8" height="10.4" rx="2"/><path d="M3.2 5.9L10 10.6l6.8-4.7"/></svg>
+    <p class="rotulo anim" style="--r:1">Asistencia</p>
     <h2 class="anim" style="--r:2">Te esperamos</h2>
     <p class="anim" style="--r:3">Saber que vienes nos ayuda a cuidar cada detalle. Te agradecemos confirmar antes del 15 de octubre de 2026.</p>
     <div class="forma anim" style="--r:4">
@@ -922,29 +945,58 @@ var ojo = new IntersectionObserver(function(entradas){
 }, {threshold:0, rootMargin:"0px 0px -4% 0px"});
 Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ ojo.observe(el); });
 
-/* ---------- Pétalos: solo en el inicio, cargados a las orillas ---------- */
+/* ---------- Pétalos: solo en el inicio ---------------------------------
+   Caen en racimos de tres (nunca sueltos y parejos, que es lo que delata
+   un efecto) y de vez en cuando sale una ráfaga del costado que la
+   gravedad va venciendo.
+   ------------------------------------------------------------------------ */
 (function(){
   if (lento) return;
   var zona = document.getElementById("inicio");
   var fuentes = ["petal_01","petal_02","petal_03"];
-  for (var i = 0; i < 14; i++){
+  function nuevo(){
     var im = document.createElement("img");
     im.className = "petalo"; im.alt = "";
-    im.src = "assets/img/" + fuentes[i % 3] + ".png";
-    /* dos de cada tres caen cerca de las columnas; el resto, al centro */
-    var orilla = (i % 3 !== 2);
-    var x = orilla
-      ? (Math.random() < .5 ? 1 + Math.random()*22 : 77 + Math.random()*22)
-      : 30 + Math.random()*40;
-    im.style.left = x.toFixed(1) + "%";
-    im.style.width = (orilla ? 14 + Math.random()*10 : 10 + Math.random()*6) + "px";
-    im.style.setProperty("--op", "1");
-    if (i % 4 === 0) im.classList.add("delante");
-    im.style.setProperty("--deriva", (Math.random()*7 - 3).toFixed(1) + "vw");
-    im.style.setProperty("--giro", Math.round(180 + Math.random()*260) + "deg");
-    im.style.animationDuration = (17 + Math.random()*16).toFixed(1) + "s";
-    im.style.animationDelay = (-Math.random()*26).toFixed(1) + "s";
+    im.src = "assets/img/" + fuentes[Math.floor(Math.random()*3)] + ".png";
     zona.appendChild(im);
+    return im;
+  }
+
+  /* cinco racimos de tres, repartidos con peso hacia las orillas */
+  for (var g = 0; g < 5; g++){
+    var orilla = g < 3;
+    var base = orilla
+      ? (g % 2 === 0 ? 3 + Math.random()*16 : 80 + Math.random()*16)
+      : 32 + Math.random()*36;
+    var arranque = -Math.random()*26;
+    for (var k = 0; k < 3; k++){
+      var im = nuevo();
+      im.style.left = Math.max(1, Math.min(95, base + (Math.random()*9 - 4.5))).toFixed(1) + "%";
+      im.style.width = (orilla ? 17 + Math.random()*11 : 12 + Math.random()*7).toFixed(0) + "px";
+      im.style.setProperty("--deriva", (Math.random()*8 - 3.5).toFixed(1) + "vw");
+      im.style.setProperty("--giro", Math.round(200 + Math.random()*260) + "deg");
+      im.style.animationName = "caer";
+      im.style.animationDuration = (16 + Math.random()*13).toFixed(1) + "s";
+      /* el racimo arranca junto pero cada pétalo baja a su ritmo */
+      im.style.animationDelay = (arranque + k * (.5 + Math.random()*1.6)).toFixed(1) + "s";
+      if (k === 1) im.classList.add("delante");
+    }
+  }
+
+  /* cuatro ráfagas laterales, espaciadas para que sean esporádicas */
+  for (var r = 0; r < 4; r++){
+    var izq = r % 2 === 0;
+    var im2 = nuevo();
+    im2.classList.add("rafaga");
+    im2.style[izq ? "left" : "right"] = (-3 - Math.random()*3).toFixed(1) + "%";
+    im2.style.setProperty("--desde", (26 + Math.random()*34).toFixed(0) + "%");
+    im2.style.setProperty("--empuje", (22 + Math.random()*16).toFixed(0) + "vw");
+    im2.style.setProperty("--giro", Math.round(260 + Math.random()*240) + "deg");
+    im2.style.width = (15 + Math.random()*9).toFixed(0) + "px";
+    im2.style.animationName = izq ? "rafaga-i" : "rafaga-d";
+    im2.style.animationDuration = (9 + Math.random()*5).toFixed(1) + "s";
+    im2.style.animationDelay = (-Math.random()*30 - r*7).toFixed(1) + "s";
+    if (r % 2) im2.classList.add("delante");
   }
 })();
 
