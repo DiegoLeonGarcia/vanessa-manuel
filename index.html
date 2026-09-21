@@ -48,12 +48,11 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      clamp(74px, 17vw, 190px);   /* ancho de las columnas */
-  --col-h:      clamp(330px, 74svh, 780px); /* alto visible; se recorta por arriba */
+  --col-w:      clamp(66px, 16vw, 210px);   /* ancho de las columnas */
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;overscroll-behavior-y:contain;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+html{overscroll-behavior-y:contain;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 body{
   margin:0;overscroll-behavior-y:contain;background:var(--papel);color:var(--tinta);
   font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;
@@ -204,7 +203,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   transform:translateX(-102%);
   transition:transform .55s cubic-bezier(.35,.85,.35,1);
   display:flex;flex-direction:column;justify-content:center;
-  padding:72px 0 32px;
+  padding:48px 0 28px;
   overflow-x:hidden;overflow-y:auto;
   scrollbar-width:none;-ms-overflow-style:none;
 }
@@ -217,14 +216,14 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
     rgba(255,252,246,.34) 72%,rgba(122,100,66,.22) 100%)}
 
 .panel .logo-panel{position:relative;z-index:2;display:block;
-  width:min(62%,190px);margin:0 auto 26px;
+  width:min(46%,142px);margin:0 auto 20px;
   opacity:0;transform:translateY(-10px);
   transition:opacity .5s ease,transform .5s ease}
 .menu-abierto .panel .logo-panel{opacity:1;transform:none;transition-delay:.1s}
 
 .panel a{position:relative;z-index:2;display:flex;align-items:center;gap:16px;
-  padding:12px 30px;font-family:"Montserrat",sans-serif;font-weight:600;
-  font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  padding:10px 28px;font-family:"Cormorant Garamond",serif;font-weight:600;
+  font-size:clamp(15px,4vw,17px);letter-spacing:.16em;text-transform:uppercase;
   color:var(--oliva);text-decoration:none;
   opacity:0;transform:translateX(-16px);
   transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.3,1),color .3s ease}
@@ -275,38 +274,57 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .separador b{display:block;width:5px;height:5px;background:var(--laton);transform:rotate(45deg)}
 
 /* ==========================================================================
-   01 · INICIO   (sección independiente, sin ningún efecto encima)
+   01 · INICIO
    --------------------------------------------------------------------------
-   El paisaje es ultrawide (1983x793): se ancla ABAJO para que el piso
-   siempre se vea y lo que se recorte sea el cielo.
-   Las columnas se anclan a la base, y lo que se recorta es su parte alta.
+   El paisaje se ancla ABAJO: siempre se ve el piso, se recorta el cielo.
+   Las columnas van de arriba a abajo completas (se recortan a lo ancho,
+   nunca a lo alto) y el contenido lleva un margen que las respeta.
    ========================================================================== */
 #inicio{position:relative;overflow:hidden;
   min-height:100svh;min-height:100dvh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:clamp(5.5rem,13vh,8rem) clamp(1.2rem,5vw,2rem) clamp(2rem,5vh,3rem)}
+  text-align:center;
+  padding:clamp(5rem,12vh,7rem) calc(var(--col-w) + clamp(8px,2.4vw,26px)) clamp(2rem,5vh,3rem)}
 #inicio .paisaje{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center bottom;z-index:0}
-.columna{position:absolute;bottom:0;z-index:1;pointer-events:none;
-  width:var(--col-w);height:var(--col-h);
-  object-fit:cover;object-position:center bottom}
+  object-fit:cover;object-position:center bottom;z-index:0;will-change:transform}
+
+.columna{position:absolute;top:0;bottom:0;z-index:1;pointer-events:none;
+  width:var(--col-w);height:100%;
+  object-fit:cover;object-position:center center}
 .col-i{left:0}
 .col-d{right:0}
-#inicio .caja,#inicio .baja{position:relative;z-index:2}
 
+#inicio .caja,#inicio .baja{position:relative;z-index:3}
 .antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
-  font-size:clamp(12px,3.4vw,15px);letter-spacing:.38em;text-transform:uppercase;
-  color:var(--oliva);margin:0 0 1.5rem}
-.logo-novios{width:min(64vw,330px);max-height:34svh;object-fit:contain;margin:0 auto 1.7rem}
+  font-size:clamp(11px,3.1vw,14px);letter-spacing:.36em;text-transform:uppercase;
+  color:#65705A;margin:0 0 1.4rem}
+.logo-novios{width:min(56vw,290px);max-height:30svh;object-fit:contain;margin:0 auto 1.5rem}
 .fecha{font-family:"Montserrat",sans-serif;font-weight:600;
-  font-size:clamp(13px,3.7vw,17px);letter-spacing:.26em;text-transform:uppercase;
-  color:var(--tinta-70);margin:0}
+  font-size:clamp(10.5px,2.9vw,13.5px);letter-spacing:.24em;text-transform:uppercase;
+  color:#65705A;margin:0}
 .lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
-  font-size:clamp(22px,6vw,30px);line-height:1.55;color:var(--tinta);
-  margin:1.9rem auto 0;max-width:16ch}
-.baja{display:inline-block;margin-top:clamp(1.8rem,5.5vh,3.2rem);color:var(--oliva);
+  white-space:nowrap;
+  font-size:clamp(15px,4.4vw,27px);line-height:1.5;color:var(--tinta);
+  margin:1.7rem auto 0;padding:.35em 1em;
+  background:radial-gradient(ellipse 62% 130% at 50% 50%,
+    rgba(255,253,248,.88) 0%,rgba(255,253,248,.5) 52%,rgba(255,253,248,0) 80%);
+  text-shadow:0 0 14px rgba(255,253,248,.95),0 0 28px rgba(255,253,248,.8)}
+
+.baja{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
+  margin-top:clamp(1.4rem,4.5vh,2.6rem);color:#5E6A52;
+  background:radial-gradient(circle,rgba(255,253,248,.85) 30%,rgba(255,253,248,0) 72%);
   animation:baja 2.8s ease-in-out infinite}
-@keyframes baja{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(8px);opacity:1}}
+@keyframes baja{0%,100%{transform:translateY(0);opacity:.62}50%{transform:translateY(8px);opacity:1}}
+
+/* Pétalos: solo dentro del inicio, y sobre todo hacia las orillas */
+.petalo{position:absolute;top:-14%;z-index:2;pointer-events:none;
+  will-change:transform;animation:caer linear infinite}
+@keyframes caer{
+  0%{opacity:0;transform:translate3d(0,-12vh,0) rotate(0deg)}
+  12%{opacity:var(--op,.8)}
+  88%{opacity:var(--op,.8)}
+  100%{opacity:0;transform:translate3d(var(--deriva,4vw),118vh,0) rotate(var(--giro,300deg))}
+}
 
 /* ==========================================================================
    02 · CUENTA REGRESIVA   (sección aparte, sobre papel)
@@ -316,6 +334,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 #contador .textura{position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;opacity:.5;z-index:0}
 #contador>*:not(.textura){position:relative;z-index:1}
+#contador .separador{margin-bottom:clamp(2.2rem,6vh,3.6rem)}
 #contador .titulo{font-family:"Montserrat",sans-serif;font-weight:600;
   white-space:nowrap;text-transform:uppercase;
   font-size:clamp(10px,2.7vw,13.5px);letter-spacing:clamp(.1em,.55vw,.28em);
@@ -397,10 +416,10 @@ p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-heig
 .campo input,.campo select{width:100%;padding:1rem 1.3rem;
   border:1.5px solid rgba(110,122,94,.4);border-radius:999px;
   background:rgba(255,253,249,.88);color:var(--tinta);font-family:"Montserrat",sans-serif;
-  font-weight:500;font-size:clamp(14px,3.8vw,15px);appearance:none;text-align:center}
+  font-weight:500;font-size:16px;appearance:none;text-align:center}
 .campo input:focus,.campo select:focus{outline:none;border-color:var(--oliva)}
-.aviso{font-size:clamp(14.5px,3.9vw,16px);font-weight:500;color:var(--tinta-45);
-  font-style:italic;margin:1.4rem 0 0}
+.aviso{font-size:clamp(17px,4.6vw,20px);font-weight:500;color:var(--tinta-70);
+  font-style:italic;margin:1.6rem 0 0}
 
 footer{background:var(--tinta);color:rgba(251,247,240,.82);text-align:center;
   padding:clamp(3.6rem,10vh,5.5rem) 1.4rem calc(2.6rem + env(safe-area-inset-bottom));
@@ -741,7 +760,7 @@ function sonar(){
 }
 function callar(){
   if (audio.paused) return;
-  fundir(0, 3600, function(){ audio.pause(); marcarMusica(false); });
+  fundir(0, 1700, function(){ audio.pause(); marcarMusica(false); });
 }
 
 /* ---------- Abrir y cerrar ---------- */
@@ -829,7 +848,12 @@ function irA(id, ms){
   if (!destino) return;
   if (lento){ destino.scrollIntoView(); return; }
   var inicio = window.scrollY, t0 = performance.now();
-  function suave(t){ return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2; }
+  /* acelera despacio, viaja parejo y frena largo */
+  function suave(t){
+    return t < .28 ? 2.3*t*t
+         : t < .62 ? .18 + (t - .28) * 1.62
+         : 1 - Math.pow(1 - (t - .62)/.38, 3) * .449;
+  }
   function paso(ahora){
     var t = Math.min(1, (ahora - t0)/ms);
     var meta = destino.getBoundingClientRect().top + window.scrollY;
@@ -887,6 +911,59 @@ var ojo = new IntersectionObserver(function(entradas){
   });
 }, {threshold:0, rootMargin:"0px 0px -4% 0px"});
 Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ ojo.observe(el); });
+
+/* ---------- Pétalos: solo en el inicio, cargados a las orillas ---------- */
+(function(){
+  if (lento) return;
+  var zona = document.getElementById("inicio");
+  var fuentes = ["petal_01","petal_02","petal_03"];
+  for (var i = 0; i < 14; i++){
+    var im = document.createElement("img");
+    im.className = "petalo"; im.alt = "";
+    im.src = "assets/img/" + fuentes[i % 3] + ".png";
+    /* dos de cada tres caen cerca de las columnas; el resto, al centro */
+    var orilla = (i % 3 !== 2);
+    var x = orilla
+      ? (Math.random() < .5 ? 1 + Math.random()*22 : 77 + Math.random()*22)
+      : 30 + Math.random()*40;
+    im.style.left = x.toFixed(1) + "%";
+    im.style.width = (orilla ? 13 + Math.random()*13 : 9 + Math.random()*7) + "px";
+    im.style.setProperty("--op", (orilla ? .5 + Math.random()*.32 : .28 + Math.random()*.2).toFixed(2));
+    im.style.setProperty("--deriva", (Math.random()*7 - 3).toFixed(1) + "vw");
+    im.style.setProperty("--giro", Math.round(180 + Math.random()*260) + "deg");
+    im.style.animationDuration = (17 + Math.random()*16).toFixed(1) + "s";
+    im.style.animationDelay = (-Math.random()*26).toFixed(1) + "s";
+    zona.appendChild(im);
+  }
+})();
+
+/* ---------- Parallax suave en los fondos ---------- */
+(function(){
+  if (lento) return;
+  var capas = [];
+  var paisaje = document.querySelector("#inicio .paisaje");
+  if (paisaje) capas.push({el:paisaje, k:.14});
+  Array.prototype.forEach.call(document.querySelectorAll(".escena-foto .fondo"), function(el){
+    el.style.willChange = "transform";
+    capas.push({el:el, k:.12});
+  });
+  var pendiente = false;
+  function mover(){
+    pendiente = false;
+    var alto = window.innerHeight;
+    capas.forEach(function(c){
+      var r = c.el.parentElement.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > alto + 80) return;
+      var centro = r.top + r.height/2 - alto/2;
+      c.el.style.transform = "translate3d(0," + (-centro * c.k).toFixed(1) + "px,0) scale(1.18)";
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!pendiente){ pendiente = true; requestAnimationFrame(mover); }
+  }, {passive:true});
+  window.addEventListener("resize", mover, {passive:true});
+  mover();
+})();
 
 /* ---------- WhatsApp ---------- */
 document.getElementById("enviar").addEventListener("click", function(){
