@@ -48,7 +48,7 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      clamp(80px, 21vw, 224px);   /* ancho de las columnas */
+  --col-w:      min(clamp(80px, 21vw, 224px), 19svh); /* ancho de las columnas */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -257,7 +257,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .anim{opacity:0;transform:translateY(28px);
   transition:opacity 1.6s ease,transform 1.8s cubic-bezier(.2,.8,.3,1),
              filter 1.6s ease,letter-spacing 1.9s cubic-bezier(.2,.8,.3,1);
-  transition-delay:calc(var(--r, 0) * 175ms)}
+  transition-delay:calc(var(--r, 0) * 150ms)}
 .anim.visto{opacity:1;transform:none}
 .anim.abre{transform:none;letter-spacing:.62em}
 .anim.abre.visto{letter-spacing:.4em}
@@ -270,8 +270,8 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 
 /* El inicio se revela cuando se abren las puertas, no antes: se espera
    con la clase .espera y entra más pausado que el resto */
-#inicio .anim{transition-duration:1.9s,2.1s,1.9s,2.2s;
-  transition-delay:calc(var(--r, 0) * 265ms)}
+#inicio .anim{transition-duration:1.7s,1.9s,1.7s,2s;
+  transition-delay:calc(var(--r, 0) * 190ms)}
 #inicio .anim.crece{transform:scale(.9)}
 #inicio .lema{filter:blur(11px)}
 #inicio .lema.visto{filter:blur(0)}
@@ -300,11 +300,16 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   object-fit:cover;object-position:center bottom;z-index:0}
 
 /* columnas de piso a techo: la base siempre visible, se recorta por arriba */
-.columna{position:absolute;top:0;bottom:0;z-index:1;pointer-events:none;
-  width:var(--col-w);height:100%;
-  object-fit:cover;object-position:center bottom}
-.col-i{left:0}
-.col-d{right:0}
+.columna{position:absolute;bottom:0;z-index:1;pointer-events:none;
+  width:var(--col-w);height:var(--col-alto,100%);
+  object-fit:cover}
+/* se recorta el lado que da al borde de la pantalla, nunca las guías de
+   la planta que caen hacia el centro */
+.col-i{left:0;object-position:right bottom}
+.col-d{right:0;object-position:left bottom}
+/* en celular el capitel se asoma recortado arriba, para que no parezca
+   que la columna termina en el aire */
+@media (max-width:760px){ .columna{--col-alto:106%} }
 
 #inicio .caja{position:relative;z-index:3;
   width:min(calc(100vw - 2 * var(--col-w) - 26px), 620px);margin:0 auto}
@@ -339,17 +344,20 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   0%{opacity:0;transform:translate3d(0,-12vh,0) rotate(0deg)}
   10%{opacity:1}
   86%{opacity:1}
-  100%{opacity:0;transform:translate3d(var(--deriva,4vw),118vh,0) rotate(var(--giro,300deg))}
+  100%{opacity:0;transform:translate3d(var(--deriva,4vw),var(--caida,118vh),0) rotate(var(--giro,300deg))}
 }
 
 /* ==========================================================================
    02 · CUENTA REGRESIVA   (sección aparte, sobre papel)
    ========================================================================== */
-#contador{background:var(--papel);position:relative;overflow:hidden;
-  padding:clamp(4rem,11vh,6.5rem) 1rem clamp(4.5rem,12vh,7rem);text-align:center}
-#contador .textura{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;opacity:.5;z-index:0}
-#contador>*:not(.textura){position:relative;z-index:1}
+/* El borde superior del fondo continúa el piso del inicio: se ancla ARRIBA
+   y solo se recorta por los lados o por abajo. En pantallas anchas la
+   sección crece lo necesario para mostrar la imagen completa. */
+#contador{position:relative;overflow:hidden;text-align:center;
+  background:#EDE4D6 url("assets/img/countdown_stone_background.png") center top / cover no-repeat;
+  min-height:calc(100vw / 2.2716);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:clamp(4.5rem,12vh,7rem) 1rem clamp(4.5rem,12vh,7rem)}
 #contador .separador{margin-bottom:clamp(2.2rem,6vh,3.6rem)}
 #lugares .separador{margin:0 auto clamp(2.4rem,6vh,3.6rem)}
 #contador .titulo{font-family:"Montserrat",sans-serif;font-weight:600;
@@ -370,11 +378,11 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
    ========================================================================== */
 section{padding:clamp(4.5rem,12vh,7.5rem) clamp(1.2rem,5vw,2rem);position:relative}
 .caja{width:min(92vw,660px);margin:0 auto}
-.texturada{background:var(--papel);position:relative;overflow:hidden}
-.texturada .textura{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;z-index:0}
-.texturada>*:not(.textura){position:relative;z-index:1}
-.texturada::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;z-index:2;
-  background:linear-gradient(90deg,transparent,rgba(155,170,150,.55),transparent)}
+.texturada{position:relative;overflow:hidden;
+  background:var(--papel) center / cover no-repeat}
+.texturada>*{position:relative;z-index:1}
+.fondo-piedra{background-image:url("assets/img/section_stone_background.png")}
+.fondo-durazno{background-image:url("assets/img/section_stone_peach_background.png")}
 .icono-sec{color:var(--laton-2);margin:0 auto 1.3rem;display:block;
   width:clamp(34px,8vw,44px);height:auto}
 .icono-sec.chico{width:clamp(30px,7vw,38px)}
@@ -442,21 +450,22 @@ p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(17px,4.6vw,20px);line-height
 .aviso{font-size:clamp(17px,4.6vw,20px);font-weight:500;color:var(--tinta-70);
   font-style:italic;margin:1.6rem 0 0}
 
-footer{background:var(--tinta);color:rgba(251,247,240,.82);text-align:center;
+footer{background:#E9DFD0 url("assets/img/footer_stone_background.png") center / cover no-repeat;
+  color:var(--tinta);text-align:center;
   padding:clamp(3.6rem,10vh,5.5rem) 1.4rem calc(2.6rem + env(safe-area-inset-bottom));
   position:relative;overflow:hidden}
 footer .logo-pie{width:min(56vw,250px);margin:0 auto 1.8rem}
 footer small{display:block;font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(10px,2.7vw,12px);letter-spacing:.3em;text-transform:uppercase;
-  color:rgba(251,247,240,.7)}
+  color:#65705A}
 footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
-  font-size:clamp(16px,4.2vw,18px);color:rgba(251,247,240,.68)}
+  font-size:clamp(16px,4.2vw,18px);color:var(--tinta-70)}
 
 /* ==========================================================================
    HORIZONTAL / PANTALLAS BAJAS
    ========================================================================== */
 @media (orientation:landscape) and (max-height:560px){
-  :root{--col-w:clamp(110px,20vw,230px)}
+  :root{--col-w:min(clamp(80px,20vw,230px),19svh)}
   .llamada{margin-top:clamp(3rem,10vh,5rem)}
   .para{margin-bottom:clamp(3rem,10vh,5rem)}
   #inicio{min-height:100dvh;padding-top:4.5rem}
@@ -575,7 +584,6 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 
 <!-- ==================== 02 · CUENTA REGRESIVA ==================== -->
 <section id="contador">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
   <div class="separador anim" style="--r:0"><i></i><b></b><i></i></div>
   <p class="titulo anim abre" style="--r:1">Falta poco para nuestro gran día</p>
   <div class="reloj anim" style="--r:2">
@@ -593,8 +601,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 04 · MENSAJE ==================== -->
-<section class="texturada" id="mensaje">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+<section class="texturada fondo-piedra" id="mensaje">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16.6S3.8 12.8 3.8 8.8A3.3 3.3 0 0110 6.8a3.3 3.3 0 016.2 2c0 4-6.2 7.8-6.2 7.8z"/></svg>
     <p class="rotulo anim" style="--r:1">Un día muy especial</p>
@@ -606,8 +613,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 05 · PADRES ==================== -->
-<section class="texturada" id="padres">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+<section class="texturada fondo-durazno" id="padres">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.6" cy="10" r="4.9"/><circle cx="12.4" cy="10" r="4.9"/></svg>
     <p class="rotulo anim" style="--r:1">Con su bendición</p>
@@ -627,8 +633,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 06 · LUGARES ==================== -->
-<section class="texturada" id="lugares">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+<section class="texturada fondo-piedra" id="lugares">
   <div class="caja">
     <div class="centro">
       <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.6" width="14" height="12.4" rx="2"/><path d="M6.8 2.6v3.6M13.2 2.6v3.6M3 8.8h14"/></svg>
@@ -671,8 +676,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 08 · VESTIMENTA ==================== -->
-<section class="texturada" id="vestimenta">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+<section class="texturada fondo-durazno" id="vestimenta">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 2.8L10 5l2.4-2.2 3.8 2.4-1.9 3-1.3-.7v9.7H7V7.5l-1.3.7-1.9-3z"/></svg>
     <p class="rotulo anim" style="--r:1">Vestimenta</p>
@@ -689,8 +693,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 10 · CONFIRMAR ==================== -->
-<section class="texturada" id="confirmar">
-  <img class="textura" src="assets/img/bg_envelope.png" alt="" loading="lazy">
+<section class="texturada fondo-piedra" id="confirmar">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4.8" width="14.8" height="10.4" rx="2"/><path d="M3.2 5.9L10 10.6l6.8-4.7"/></svg>
     <p class="rotulo anim" style="--r:1">Asistencia</p>
@@ -714,7 +717,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </main>
 
 <footer>
-  <img class="logo-pie anim crece" style="--r:0" src="assets/img/logo_white.png" alt="Vanessa y Manuel">
+  <img class="logo-pie anim crece" style="--r:0" src="assets/img/logo.png" alt="Vanessa y Manuel">
   <small class="anim abre" style="--r:1">14 · Noviembre · 2026</small>
   <p class="gracias anim difumina" style="--r:2">Gracias por ser parte de nuestra historia.</p>
 </footer>
@@ -792,6 +795,7 @@ function callar(){
 function abrir(){
   if (abierto) return;
   limpiar(); clearTimeout(relojOcio);
+  t.push(setTimeout(revelarInicio, 1180));   /* las puertas ya casi salieron */
   animarP(1, 1850, function(){
     abierto = true;
     escena.classList.add("fuera");
@@ -935,7 +939,7 @@ var ojo = new IntersectionObserver(function(entradas){
   entradas.forEach(function(e){
     if (e.isIntersecting){ e.target.classList.add("visto"); ojo.unobserve(e.target); }
   });
-}, {threshold:0, rootMargin:"0px 0px -4% 0px"});
+}, {threshold:0, rootMargin:"0px 0px 6% 0px"});
 Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){
   /* los del inicio esperan a que se abran las puertas */
   if (!el.closest("#inicio")) ojo.observe(el);
@@ -947,43 +951,47 @@ function revelarInicio(){
 }
 
 /* ---------- Pétalos: solo en el inicio ---------------------------------
-   Caen en racimos de 3 o 4, juntos pero nunca alineados ni al mismo ritmo,
-   que es lo que delata un efecto.
-   MEMORIA: se crea un número fijo de elementos y sus animaciones son
-   infinitas, así que nada se acumula ni se queda en memoria al salir de
-   cuadro. Además se pausan cuando el inicio deja de verse.
+   Caen en puñitos a lo largo de todo el ancho. Cada puñito comparte la
+   misma duración (así vuelve a salir junto cada ciclo), pero cada pétalo
+   recorre una distancia distinta: salen juntos y se van separando.
+   MEMORIA: número fijo de elementos que se reciclan; nada se acumula.
+   Se pausan cuando el inicio no está a la vista.
    ------------------------------------------------------------------------ */
 (function(){
   if (lento) return;
   var zona = document.getElementById("inicio");
   var fuentes = ["petal_01","petal_02","petal_03"];
+  var ancho = window.innerWidth > 900;
+  var grupos = ancho ? 5 : 4;                    /* moderados en celular */
+  var ciclo = 19;                                 /* s, duración base */
 
-  for (var g = 0; g < 5; g++){
-    var orilla = g < 3;
-    var base = orilla
-      ? (g % 2 === 0 ? 3 + Math.random()*16 : 80 + Math.random()*16)
-      : 32 + Math.random()*36;
-    var arranque = -Math.random()*26;
-    var cuantos = 3 + Math.round(Math.random());     /* 3 o 4 por racimo */
+  for (var g = 0; g < grupos; g++){
+    /* cada puñito en su franja, para cubrir todo el ancho sin amontonarse */
+    var franja = 92 / grupos;
+    var base = 3 + g * franja + Math.random() * franja * .8;
+    var dur = ciclo + Math.random() * 5;
+    /* repartidos en el tiempo, para que no caigan todos a la vez */
+    var arranque = -(g * dur / grupos) - Math.random() * 2;
+    var cuantos = ancho ? 3 + Math.round(Math.random()) : 3;
 
     for (var k = 0; k < cuantos; k++){
       var im = document.createElement("img");
       im.className = "petalo"; im.alt = "";
       im.src = "assets/img/" + fuentes[Math.floor(Math.random()*3)] + ".png";
-      im.style.left = Math.max(1, Math.min(94, base + (Math.random()*11 - 5.5))).toFixed(1) + "%";
-      im.style.width = (orilla ? 22 + Math.random()*13 : 15 + Math.random()*8).toFixed(0) + "px";
+      im.style.left = Math.max(1, Math.min(95, base + (Math.random()*6 - 3))).toFixed(1) + "%";
+      im.style.width = (17 + Math.random()*12).toFixed(0) + "px";
+      /* misma duración, distinta distancia: el que viaja más, cae más rápido */
+      im.style.setProperty("--caida", (104 + k*15 + Math.random()*8).toFixed(0) + "vh");
       im.style.setProperty("--deriva", (Math.random()*9 - 4).toFixed(1) + "vw");
-      im.style.setProperty("--giro", Math.round(200 + Math.random()*280) + "deg");
+      im.style.setProperty("--giro", Math.round(200 + Math.random()*300) + "deg");
       im.style.animationName = "caer";
-      im.style.animationDuration = (15 + Math.random()*14).toFixed(1) + "s";
-      /* salen casi juntos pero cada uno cae a su ritmo */
-      im.style.animationDelay = (arranque + k * (.4 + Math.random()*1.9)).toFixed(1) + "s";
+      im.style.animationDuration = dur.toFixed(1) + "s";
+      im.style.animationDelay = (arranque - Math.random()*.4).toFixed(2) + "s";
       if (k === 1) im.classList.add("delante");
       zona.appendChild(im);
     }
   }
 
-  /* fuera de cuadro no gastan nada */
   var petalos = zona.querySelectorAll(".petalo");
   new IntersectionObserver(function(e){
     var corre = e[0].isIntersecting ? "running" : "paused";
