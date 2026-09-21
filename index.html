@@ -203,7 +203,7 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   transform:translateX(-102%);
   transition:transform .55s cubic-bezier(.35,.85,.35,1);
   display:flex;flex-direction:column;justify-content:center;
-  padding:48px 0 28px;
+  padding:44px 0 28px;
   overflow-x:hidden;overflow-y:auto;
   scrollbar-width:none;-ms-overflow-style:none;
 }
@@ -216,14 +216,15 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
     rgba(255,252,246,.34) 72%,rgba(122,100,66,.22) 100%)}
 
 .panel .logo-panel{position:relative;z-index:2;display:block;
-  width:min(46%,142px);margin:0 auto 20px;
+  width:min(54%,168px);margin:0 auto 22px;
   opacity:0;transform:translateY(-10px);
   transition:opacity .5s ease,transform .5s ease}
 .menu-abierto .panel .logo-panel{opacity:1;transform:none;transition-delay:.1s}
 
-.panel a{position:relative;z-index:2;display:flex;align-items:center;gap:16px;
-  padding:10px 28px;font-family:"Cormorant Garamond",serif;font-weight:600;
-  font-size:clamp(15px,4vw,17px);letter-spacing:.16em;text-transform:uppercase;
+.panel a{position:relative;z-index:2;display:flex;align-items:center;gap:14px;
+  padding:11px 26px;font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(11.5px,3vw,13px);letter-spacing:.12em;text-transform:uppercase;
+  white-space:nowrap;
   color:var(--oliva);text-decoration:none;
   opacity:0;transform:translateX(-16px);
   transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.3,1),color .3s ease}
@@ -284,17 +285,21 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   min-height:100svh;min-height:100dvh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;
-  padding:clamp(5rem,12vh,7rem) calc(var(--col-w) + clamp(8px,2.4vw,26px)) clamp(2rem,5vh,3rem)}
+  padding:clamp(5rem,12vh,7rem) 0 clamp(2rem,5vh,3rem)}
+/* el paisaje NUNCA se mueve: así el piso siempre está a la vista */
 #inicio .paisaje{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:center bottom;z-index:0;will-change:transform}
+  object-fit:cover;object-position:center bottom;z-index:0}
 
+/* columnas siempre completas: se ajustan al alto y se ven enteras */
 .columna{position:absolute;top:0;bottom:0;z-index:1;pointer-events:none;
   width:var(--col-w);height:100%;
-  object-fit:cover;object-position:center center}
+  object-fit:contain;object-position:center bottom}
 .col-i{left:0}
 .col-d{right:0}
 
-#inicio .caja,#inicio .baja{position:relative;z-index:3}
+#inicio .caja{position:relative;z-index:3;
+  width:min(calc(100vw - 2 * var(--col-w) - 26px), 620px);margin:0 auto}
+#inicio .baja{position:relative;z-index:3}
 .antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(11px,3.1vw,14px);letter-spacing:.36em;text-transform:uppercase;
   color:#65705A;margin:0 0 1.4rem}
@@ -304,8 +309,8 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   color:#65705A;margin:0}
 .lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
   white-space:nowrap;
-  font-size:clamp(15px,4.4vw,27px);line-height:1.5;color:var(--tinta);
-  margin:1.7rem auto 0;padding:.35em 1em;
+  font-size:clamp(16px,4.7vw,29px);line-height:1.5;color:var(--tinta);
+  margin:1.7rem calc(-1 * var(--col-w) + 12px) 0;padding:.35em 1em;
   background:radial-gradient(ellipse 62% 130% at 50% 50%,
     rgba(255,253,248,.88) 0%,rgba(255,253,248,.5) 52%,rgba(255,253,248,0) 80%);
   text-shadow:0 0 14px rgba(255,253,248,.95),0 0 28px rgba(255,253,248,.8)}
@@ -318,7 +323,9 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 
 /* Pétalos: solo dentro del inicio, y sobre todo hacia las orillas */
 .petalo{position:absolute;top:-14%;z-index:2;pointer-events:none;
+  image-rendering:auto;filter:none;
   will-change:transform;animation:caer linear infinite}
+.petalo.delante{z-index:4}
 @keyframes caer{
   0%{opacity:0;transform:translate3d(0,-12vh,0) rotate(0deg)}
   12%{opacity:var(--op,.8)}
@@ -352,17 +359,19 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
    SECCIONES
    ========================================================================== */
 section{padding:clamp(4.5rem,12vh,7.5rem) clamp(1.2rem,5vw,2rem);position:relative}
-.caja{width:min(92vw,620px);margin:0 auto}
+.caja{width:min(92vw,660px);margin:0 auto}
 .texturada{background:var(--papel);position:relative;overflow:hidden}
 .texturada .textura{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;z-index:0}
 .texturada>*:not(.textura){position:relative;z-index:1}
 .texturada::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;z-index:2;
   background:linear-gradient(90deg,transparent,rgba(155,170,150,.55),transparent)}
-.icono-sec{color:var(--laton-2);margin:0 auto 1.1rem;display:block}
-.rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11px,3.1vw,13.5px);
-  letter-spacing:.34em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.1rem}
-h2{font-family:"Marcellus",serif;font-size:clamp(26px,6.8vw,38px);font-weight:400;margin:0 0 1.3rem}
-p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-height:1.85}
+.icono-sec{color:var(--laton-2);margin:0 auto 1.3rem;display:block;
+  width:clamp(38px,9vw,50px);height:auto}
+.rotulo{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(12px,3.4vw,15px);
+  letter-spacing:.32em;text-transform:uppercase;color:var(--oliva);margin:0 0 1.2rem}
+h2{font-family:"Marcellus",serif;font-size:clamp(30px,8vw,46px);font-weight:400;
+  line-height:1.2;margin:0 0 1.5rem}
+p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(18px,5vw,22px);line-height:1.8}
 
 .escena-foto{position:relative;min-height:clamp(380px,72vh,620px);display:grid;place-items:center;
   text-align:center;overflow:hidden;padding:clamp(3rem,9vh,5rem) 1.4rem}
@@ -370,7 +379,8 @@ p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-heig
 .escena-foto::after{content:"";position:absolute;inset:0;z-index:1;
   background:linear-gradient(180deg,rgba(58,69,54,.38),rgba(58,69,54,.16) 45%,rgba(58,69,54,.46))}
 .escena-foto .frase{position:relative;z-index:2;color:#FBF7F0;font-style:italic;font-weight:600;
-  font-size:clamp(22px,6vw,34px);line-height:1.5;max-width:18ch;margin:0 auto;
+  font-size:clamp(25px,6.6vw,40px);line-height:1.4;max-width:26ch;
+  width:min(94vw,860px);margin:0 auto;
   text-shadow:0 2px 22px rgba(40,45,35,.55)}
 
 .padres{display:grid;gap:1.8rem;text-align:center}
@@ -379,7 +389,7 @@ p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-heig
   .padres{grid-template-columns:1fr 1px 1fr;gap:1.4rem}
   .padres .raya{display:block;background:linear-gradient(180deg,transparent,rgba(110,122,94,.5),transparent)}
 }
-.padres h3{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(10px,2.7vw,12px);
+.padres h3{font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11px,3vw,13px);
   letter-spacing:.24em;text-transform:uppercase;color:var(--oliva);margin:0 0 .9rem}
 .padres p{margin:0;line-height:2.1}
 
@@ -390,25 +400,25 @@ p{margin:0 0 1.2rem;font-weight:500;font-size:clamp(16.5px,4.5vw,19px);line-heig
   .lugares .raya{display:block;background:linear-gradient(180deg,transparent,rgba(110,122,94,.5),transparent);min-height:250px}
 }
 .lugar{text-align:center}
-.lugar .hora{font-family:"Marcellus",serif;font-size:clamp(38px,9.4vw,50px);
+.lugar .hora{font-family:"Marcellus",serif;font-size:clamp(42px,10.4vw,58px);
   line-height:1.1;margin:.7rem 0 1rem;color:var(--tinta)}
 .lugar .sede{font-family:"Montserrat",sans-serif;font-weight:600;
-  font-size:clamp(15px,4.2vw,17.5px);margin:0 0 .5rem;color:var(--tinta)}
-.lugar .dir{font-size:clamp(14.5px,4vw,16.5px);font-weight:500;color:var(--oliva);
+  font-size:clamp(16.5px,4.6vw,19px);margin:0 0 .6rem;color:var(--tinta)}
+.lugar .dir{font-size:clamp(16px,4.4vw,18px);font-weight:500;color:var(--oliva);
   line-height:1.75;max-width:28ch;margin:0 auto 1.6rem}
 
 .boton{display:inline-flex;align-items:center;justify-content:center;gap:11px;
   border-radius:999px;cursor:pointer;text-decoration:none;
-  font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(11.5px,3.2vw,13px);
-  letter-spacing:.16em;text-transform:uppercase;
-  padding:1rem 2rem;border:1.5px solid var(--laton);color:var(--laton-2);background:transparent;
+  font-family:"Montserrat",sans-serif;font-weight:600;font-size:clamp(12.5px,3.5vw,14px);
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:1.05rem 2.1rem;border:1.5px solid var(--laton);color:var(--laton-2);background:transparent;
   transition:background .35s ease,color .35s ease,transform .3s ease,box-shadow .3s ease}
 @media (hover:hover){.boton:hover{background:var(--laton);color:var(--papel);
   transform:translateY(-2px);box-shadow:0 8px 20px rgba(176,141,87,.28)}}
 .boton.solido{background:var(--oliva);border-color:var(--oliva);color:#FBF7F0;width:100%}
 @media (hover:hover){.boton.solido:hover{background:var(--tinta);border-color:var(--tinta)}}
 
-.etiqueta{font-family:"Mrs Saint Delafield",cursive;font-size:clamp(52px,15vw,78px);
+.etiqueta{font-family:"Mrs Saint Delafield",cursive;font-size:clamp(60px,17vw,92px);
   color:var(--laton-2);line-height:1;margin:0 0 .5rem}
 
 .forma{max-width:400px;margin:2rem auto 0}
@@ -848,12 +858,8 @@ function irA(id, ms){
   if (!destino) return;
   if (lento){ destino.scrollIntoView(); return; }
   var inicio = window.scrollY, t0 = performance.now();
-  /* acelera despacio, viaja parejo y frena largo */
-  function suave(t){
-    return t < .28 ? 2.3*t*t
-         : t < .62 ? .18 + (t - .28) * 1.62
-         : 1 - Math.pow(1 - (t - .62)/.38, 3) * .449;
-  }
+  /* curva continua: arranca suave, viaja y frena sin quiebres */
+  function suave(t){ return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2; }
   function paso(ahora){
     var t = Math.min(1, (ahora - t0)/ms);
     var meta = destino.getBoundingClientRect().top + window.scrollY;
@@ -867,7 +873,7 @@ Array.prototype.forEach.call(document.querySelectorAll("[data-ir]"), function(el
     ev.preventDefault();
     var enPanel = !!el.closest(".panel");
     cuerpo.classList.remove("menu-abierto");
-    setTimeout(function(){ irA(el.dataset.ir, 2000); }, enPanel ? 420 : 0);
+    setTimeout(function(){ irA(el.dataset.ir, 2200); }, enPanel ? 420 : 0);
   });
 });
 
@@ -881,12 +887,16 @@ function marcarMusica(son){
   btn.setAttribute("aria-label", son ? "Pausar música":"Reproducir música");
 }
 btn.addEventListener("click", function(){
+  clearInterval(fundido);               /* corta cualquier desvanecido en curso */
   if (audio.paused){
     apagadaPorTi = false;
-    audio.play().then(function(){ fundir(VOL, 600); marcarMusica(true); }).catch(function(){});
+    audio.volume = VOL;
+    marcarMusica(true);
+    audio.play().catch(function(){ marcarMusica(false); });
   } else {
     apagadaPorTi = true;
-    fundir(0, 500, function(){ audio.pause(); marcarMusica(false); });
+    audio.pause();
+    marcarMusica(false);
   }
 });
 
@@ -927,8 +937,9 @@ Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ o
       ? (Math.random() < .5 ? 1 + Math.random()*22 : 77 + Math.random()*22)
       : 30 + Math.random()*40;
     im.style.left = x.toFixed(1) + "%";
-    im.style.width = (orilla ? 13 + Math.random()*13 : 9 + Math.random()*7) + "px";
-    im.style.setProperty("--op", (orilla ? .5 + Math.random()*.32 : .28 + Math.random()*.2).toFixed(2));
+    im.style.width = (orilla ? 26 + Math.random()*20 : 18 + Math.random()*12) + "px";
+    im.style.setProperty("--op", (orilla ? .7 + Math.random()*.3 : .45 + Math.random()*.25).toFixed(2));
+    if (i % 4 === 0) im.classList.add("delante");
     im.style.setProperty("--deriva", (Math.random()*7 - 3).toFixed(1) + "vw");
     im.style.setProperty("--giro", Math.round(180 + Math.random()*260) + "deg");
     im.style.animationDuration = (17 + Math.random()*16).toFixed(1) + "s";
@@ -941,8 +952,6 @@ Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ o
 (function(){
   if (lento) return;
   var capas = [];
-  var paisaje = document.querySelector("#inicio .paisaje");
-  if (paisaje) capas.push({el:paisaje, k:.14});
   Array.prototype.forEach.call(document.querySelectorAll(".escena-foto .fondo"), function(el){
     el.style.willChange = "transform";
     capas.push({el:el, k:.12});
