@@ -309,6 +309,13 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   height:104%;width:auto;max-width:none}
 .col-i{left:0}
 .col-d{right:0}
+/* Celulares muy alargados: cada columna puede ocupar como máximo --tope-col
+   del ancho. Lo que se pase de ahí se desliza fuera de cuadro, de forma
+   gradual (sin cortes). En computadora, tablet y celulares normales el
+   desplazamiento es 0 y nada cambia. Las dos quedan con el mismo ancho visible. */
+:root{--tope-col:31vw}
+.col-i{transform:translateX(calc(-1 * max(0px, 100svh * 1.04 * .2096 - var(--tope-col))))}
+.col-d{transform:translateX(max(0px, 100svh * 1.04 * .229 - var(--tope-col)))}
 
 #inicio .caja{position:relative;z-index:3;
   width:min(max(calc(100vw - 100svh * .456 * .86 - 20px), 74vw), 620px);margin:0 auto}
