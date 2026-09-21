@@ -48,9 +48,7 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  /* alto de las columnas: el de la sección (y un poco más, que se sale por
-     arriba), pero nunca tan alto que en celular tape el centro */
-  --col-h:      min(104svh, 119vw);
+
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -306,20 +304,22 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
    Pegadas a su orilla, ancladas al piso, las dos al mismo alto. Si son más
    altas que la sección, lo único que sale de cuadro es la punta de arriba. */
 .columna{position:absolute;bottom:0;z-index:1;pointer-events:none;
-  height:var(--col-h);width:auto;max-width:none}
+  height:104%;width:auto;max-width:none}
 .col-i{left:0}
 .col-d{right:0}
 
 #inicio .caja{position:relative;z-index:3;
-  width:min(calc(100vw - var(--col-h) * .4386 * .86 - 20px), 620px);margin:0 auto}
+  width:min(max(calc(100vw - 100svh * .456 * .86 - 20px), 74vw), 620px);margin:0 auto}
 #inicio .baja{position:relative;z-index:3}
 .antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(11px,3.1vw,14px);letter-spacing:.36em;text-transform:uppercase;
-  color:#65705A;margin:0 0 1.4rem}
+  color:#65705A;margin:0 0 1.4rem;
+  text-shadow:0 0 12px rgba(255,253,248,.9),0 0 24px rgba(255,253,248,.7)}
 .logo-novios{width:min(56vw,290px);max-height:30svh;object-fit:contain;margin:0 auto 1.5rem}
 .fecha{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(10px,2.8vw,13.5px);letter-spacing:.22em;text-transform:uppercase;
-  white-space:nowrap;color:#65705A;margin:0}
+  white-space:nowrap;color:#65705A;margin:0;
+  text-shadow:0 0 12px rgba(255,253,248,.9),0 0 24px rgba(255,253,248,.7)}
 .lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
   white-space:nowrap;
   font-size:clamp(16px,4.7vw,29px);line-height:1.5;color:var(--tinta);
@@ -1037,32 +1037,6 @@ function revelarInicio(){
     var corre = e[0].isIntersecting ? "running" : "paused";
     Array.prototype.forEach.call(petalos, function(p){ p.style.animationPlayState = corre; });
   }, {threshold:0}).observe(zona);
-})();
-
-/* ---------- Parallax suave en los fondos ---------- */
-(function(){
-  if (lento) return;
-  var capas = [];
-  Array.prototype.forEach.call(document.querySelectorAll(".escena-foto .fondo"), function(el){
-    el.style.willChange = "transform";
-    capas.push({el:el, k:.20});
-  });
-  var pendiente = false;
-  function mover(){
-    pendiente = false;
-    var alto = window.innerHeight;
-    capas.forEach(function(c){
-      var r = c.el.parentElement.getBoundingClientRect();
-      if (r.bottom < -80 || r.top > alto + 80) return;
-      var centro = r.top + r.height/2 - alto/2;
-      c.el.style.transform = "translate3d(0," + (-centro * c.k).toFixed(1) + "px,0) scale(1.30)";
-    });
-  }
-  window.addEventListener("scroll", function(){
-    if (!pendiente){ pendiente = true; requestAnimationFrame(mover); }
-  }, {passive:true});
-  window.addEventListener("resize", mover, {passive:true});
-  mover();
 })();
 
 /* ---------- WhatsApp ---------- */
