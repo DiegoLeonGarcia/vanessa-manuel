@@ -48,7 +48,7 @@
 
 
   /* — GEOMETRÍA DEL INICIO — */
-  --col-w:      min(clamp(80px, 21vw, 224px), 19svh); /* ancho de las columnas */
+  --fuera:      0;      /* qué fracción de la columna queda fuera de pantalla */
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -300,31 +300,35 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   object-fit:cover;object-position:center bottom;z-index:0}
 
 /* columnas de piso a techo: la base siempre visible, se recorta por arriba */
+/* La caja de cada columna tiene LA MISMA proporción que la imagen (348/1660)
+   y se mide por el alto de la sección. Así las dos miden idéntico y no hay
+   nada que recortar. En pantallas angostas se deslizan hacia afuera la misma
+   fracción de su ancho: lo que sale de cuadro es la orilla exterior. */
 .columna{position:absolute;bottom:0;z-index:1;pointer-events:none;
-  width:var(--col-w);height:var(--col-alto,100%);
+  height:var(--col-alto,100%);width:auto;aspect-ratio:348/1660;
   object-fit:cover}
-/* se recorta el lado que da al borde de la pantalla, nunca las guías de
-   la planta que caen hacia el centro */
-.col-i{left:0;object-position:right bottom}
-.col-d{right:0;object-position:left bottom}
-/* en celular el capitel se asoma recortado arriba, para que no parezca
-   que la columna termina en el aire */
-@media (max-width:760px){ .columna{--col-alto:106%} }
+.col-i{left:0;object-position:left bottom;
+  transform:translateX(calc(var(--fuera) * -100%))}
+.col-d{right:0;object-position:right bottom;
+  transform:translateX(calc(var(--fuera) * 100%))}
+@media (max-width:1100px){ :root{--fuera:.16} }
+@media (max-width:760px){  :root{--fuera:.34} .columna{--col-alto:105%} }
 
 #inicio .caja{position:relative;z-index:3;
-  width:min(calc(100vw - 2 * var(--col-w) - 26px), 620px);margin:0 auto}
+  --col-vista:calc(100svh * .2096 * (1 - var(--fuera)) * .82);
+  width:min(calc(100vw - 2 * var(--col-vista) - 22px), 620px);margin:0 auto}
 #inicio .baja{position:relative;z-index:3}
 .antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(11px,3.1vw,14px);letter-spacing:.36em;text-transform:uppercase;
   color:#65705A;margin:0 0 1.4rem}
 .logo-novios{width:min(56vw,290px);max-height:30svh;object-fit:contain;margin:0 auto 1.5rem}
 .fecha{font-family:"Montserrat",sans-serif;font-weight:600;
-  font-size:clamp(10.5px,2.9vw,13.5px);letter-spacing:.24em;text-transform:uppercase;
-  color:#65705A;margin:0}
+  font-size:clamp(10px,2.8vw,13.5px);letter-spacing:.22em;text-transform:uppercase;
+  white-space:nowrap;color:#65705A;margin:0}
 .lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
   white-space:nowrap;
   font-size:clamp(16px,4.7vw,29px);line-height:1.5;color:var(--tinta);
-  margin:1.7rem calc(-1 * var(--col-w) + 12px) 0;padding:.35em 1em;
+  margin:1.7rem calc(-1 * min(16vw, 110px)) 0;padding:.35em 1em;
   background:radial-gradient(ellipse 62% 130% at 50% 50%,
     rgba(255,253,248,.88) 0%,rgba(255,253,248,.5) 52%,rgba(255,253,248,0) 80%);
   text-shadow:0 0 14px rgba(255,253,248,.95),0 0 28px rgba(255,253,248,.8)}
@@ -451,21 +455,61 @@ p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(17px,4.6vw,20px);line-height
   font-style:italic;margin:1.6rem 0 0}
 
 footer{background:#E9DFD0 url("assets/img/footer_stone_background.png") center / cover no-repeat;
-  color:var(--tinta);text-align:center;
-  padding:clamp(3.6rem,10vh,5.5rem) 1.4rem calc(2.6rem + env(safe-area-inset-bottom));
-  position:relative;overflow:hidden}
+  color:#FFFFFF;text-align:center;
+  padding:clamp(3.8rem,10vh,5.8rem) 1.4rem calc(2.6rem + env(safe-area-inset-bottom));
+  position:relative}
 footer .logo-pie{width:min(56vw,250px);margin:0 auto 1.8rem}
 footer small{display:block;font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(10px,2.7vw,12px);letter-spacing:.3em;text-transform:uppercase;
-  color:#65705A}
+  color:#FFFFFF;text-shadow:0 1px 10px rgba(40,30,18,.35)}
 footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
-  font-size:clamp(16px,4.2vw,18px);color:var(--tinta-70)}
+  font-size:clamp(16px,4.2vw,18px);color:#FFFFFF;text-shadow:0 1px 12px rgba(40,30,18,.35)}
+
+
+/* ==========================================================================
+   BORDES Y UNIONES ENTRE SECCIONES
+   --------------------------------------------------------------------------
+   · Piedra con piedra: una unión con filete de latón y el ornamento.
+   · Piedra con imagen: la piedra lleva un bisel (luz y sombra en su orilla)
+     y la imagen un marco de doble filete con sombra interior, como si
+     estuviera empotrada en la piedra.
+   ========================================================================== */
+.texturada{overflow:visible}
+.borde-arriba{--ba:inset 0 14px 18px -14px rgba(104,78,44,.36)}
+.borde-abajo {--bb:inset 0 -14px 18px -14px rgba(104,78,44,.36)}
+.texturada,#contador{box-shadow:var(--ba,0 0 0 transparent),var(--bb,0 0 0 transparent)}
+
+/* bisel de la orilla inferior del contador: luz arriba, sombra al filo */
+#contador::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;
+  z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(255,251,242,0) 0%,rgba(255,251,242,.55) 45%,
+    rgba(255,251,242,.2) 70%,rgba(104,78,44,.30) 100%)}
+
+/* marco de las imágenes: doble filete y sombra interior arriba y abajo */
+.escena-foto::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(34,24,12,.40) 0,rgba(34,24,12,0) 38px),
+    linear-gradient(0deg,rgba(34,24,12,.40) 0,rgba(34,24,12,0) 38px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,250,238,.75),inset 0 4px 0 rgba(176,141,87,.62),
+    inset 0 -1px 0 rgba(255,250,238,.75),inset 0 -4px 0 rgba(176,141,87,.62)}
+
+/* unión entre fondos de piedra */
+.union{position:absolute;top:0;left:50%;z-index:4;pointer-events:none;
+  transform:translate(-50%,-50%);width:min(80%,600px);
+  display:flex;align-items:center;gap:14px;color:var(--laton)}
+.union i{flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(176,141,87,.8));
+  box-shadow:0 1px 0 rgba(255,252,246,.7)}
+.union i:last-child{background:linear-gradient(90deg,rgba(176,141,87,.8),transparent)}
+.union svg{flex:none;width:24px;height:24px;
+  filter:drop-shadow(0 1px 0 rgba(255,252,246,.8))}
 
 /* ==========================================================================
    HORIZONTAL / PANTALLAS BAJAS
    ========================================================================== */
 @media (orientation:landscape) and (max-height:560px){
-  :root{--col-w:min(clamp(80px,20vw,230px),19svh)}
   .llamada{margin-top:clamp(3rem,10vh,5rem)}
   .para{margin-bottom:clamp(3rem,10vh,5rem)}
   #inicio{min-height:100dvh;padding-top:4.5rem}
@@ -583,7 +627,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 02 · CUENTA REGRESIVA ==================== -->
-<section id="contador">
+<section id="contador" class="borde-abajo">
   <div class="separador anim" style="--r:0"><i></i><b></b><i></i></div>
   <p class="titulo anim abre" style="--r:1">Falta poco para nuestro gran día</p>
   <div class="reloj anim" style="--r:2">
@@ -601,7 +645,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 04 · MENSAJE ==================== -->
-<section class="texturada fondo-piedra" id="mensaje">
+<section class="texturada fondo-piedra borde-arriba" id="mensaje">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 16.6S3.8 12.8 3.8 8.8A3.3 3.3 0 0110 6.8a3.3 3.3 0 016.2 2c0 4-6.2 7.8-6.2 7.8z"/></svg>
     <p class="rotulo anim" style="--r:1">Un día muy especial</p>
@@ -614,6 +658,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 
 <!-- ==================== 05 · PADRES ==================== -->
 <section class="texturada fondo-durazno" id="padres">
+  <div class="union" aria-hidden="true"><i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.4c1.6 2.3 2.4 4.1 2.4 5.5S13.3 11.6 12 12c-1.3-.4-2.4-1.7-2.4-3.1s.8-3.2 2.4-5.5z"/><path d="M12 20.6c-1.6-2.3-2.4-4.1-2.4-5.5s1.1-2.7 2.4-3.1c1.3.4 2.4 1.7 2.4 3.1s-.8 3.2-2.4 5.5z"/><path d="M3.4 12c2.3-1.6 4.1-2.4 5.5-2.4s2.7 1.1 3.1 2.4c-.4 1.3-1.7 2.4-3.1 2.4S5.7 13.6 3.4 12z"/><path d="M20.6 12c-2.3 1.6-4.1 2.4-5.5 2.4s-2.7-1.1-3.1-2.4c.4-1.3 1.7-2.4 3.1-2.4s3.2.8 5.5 2.4z"/></svg><i></i></div>
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7.6" cy="10" r="4.9"/><circle cx="12.4" cy="10" r="4.9"/></svg>
     <p class="rotulo anim" style="--r:1">Con su bendición</p>
@@ -633,7 +678,8 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 06 · LUGARES ==================== -->
-<section class="texturada fondo-piedra" id="lugares">
+<section class="texturada fondo-piedra borde-abajo" id="lugares">
+  <div class="union" aria-hidden="true"><i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.4c1.6 2.3 2.4 4.1 2.4 5.5S13.3 11.6 12 12c-1.3-.4-2.4-1.7-2.4-3.1s.8-3.2 2.4-5.5z"/><path d="M12 20.6c-1.6-2.3-2.4-4.1-2.4-5.5s1.1-2.7 2.4-3.1c1.3.4 2.4 1.7 2.4 3.1s-.8 3.2-2.4 5.5z"/><path d="M3.4 12c2.3-1.6 4.1-2.4 5.5-2.4s2.7 1.1 3.1 2.4c-.4 1.3-1.7 2.4-3.1 2.4S5.7 13.6 3.4 12z"/><path d="M20.6 12c-2.3 1.6-4.1 2.4-5.5 2.4s-2.7-1.1-3.1-2.4c.4-1.3 1.7-2.4 3.1-2.4s3.2.8 5.5 2.4z"/></svg><i></i></div>
   <div class="caja">
     <div class="centro">
       <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.6" width="14" height="12.4" rx="2"/><path d="M6.8 2.6v3.6M13.2 2.6v3.6M3 8.8h14"/></svg>
@@ -676,7 +722,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 08 · VESTIMENTA ==================== -->
-<section class="texturada fondo-durazno" id="vestimenta">
+<section class="texturada fondo-durazno borde-arriba borde-abajo" id="vestimenta">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7.6 2.8L10 5l2.4-2.2 3.8 2.4-1.9 3-1.3-.7v9.7H7V7.5l-1.3.7-1.9-3z"/></svg>
     <p class="rotulo anim" style="--r:1">Vestimenta</p>
@@ -693,7 +739,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </section>
 
 <!-- ==================== 10 · CONFIRMAR ==================== -->
-<section class="texturada fondo-piedra" id="confirmar">
+<section class="texturada fondo-piedra borde-arriba" id="confirmar">
   <div class="caja centro">
     <svg class="icono-sec anim" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="4.8" width="14.8" height="10.4" rx="2"/><path d="M3.2 5.9L10 10.6l6.8-4.7"/></svg>
     <p class="rotulo anim" style="--r:1">Asistencia</p>
@@ -717,7 +763,8 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </main>
 
 <footer>
-  <img class="logo-pie anim crece" style="--r:0" src="assets/img/logo.png" alt="Vanessa y Manuel">
+  <div class="union" aria-hidden="true"><i></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.4c1.6 2.3 2.4 4.1 2.4 5.5S13.3 11.6 12 12c-1.3-.4-2.4-1.7-2.4-3.1s.8-3.2 2.4-5.5z"/><path d="M12 20.6c-1.6-2.3-2.4-4.1-2.4-5.5s1.1-2.7 2.4-3.1c1.3.4 2.4 1.7 2.4 3.1s-.8 3.2-2.4 5.5z"/><path d="M3.4 12c2.3-1.6 4.1-2.4 5.5-2.4s2.7 1.1 3.1 2.4c-.4 1.3-1.7 2.4-3.1 2.4S5.7 13.6 3.4 12z"/><path d="M20.6 12c-2.3 1.6-4.1 2.4-5.5 2.4s-2.7-1.1-3.1-2.4c.4-1.3 1.7-2.4 3.1-2.4s3.2.8 5.5 2.4z"/></svg><i></i></div>
+  <img class="logo-pie anim crece" style="--r:0" src="assets/img/logo_white.png" alt="Vanessa y Manuel">
   <small class="anim abre" style="--r:1">14 · Noviembre · 2026</small>
   <p class="gracias anim difumina" style="--r:2">Gracias por ser parte de nuestra historia.</p>
 </footer>
