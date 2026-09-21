@@ -254,17 +254,27 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 .menu-abierto .panel .aparte a{transition-delay:.54s}
 
 /* ── Animaciones de entrada: una sola vez y se quedan ── */
-.anim{opacity:0;transform:translateY(26px);
-  transition:opacity 1.35s ease,transform 1.5s cubic-bezier(.2,.8,.3,1),
-             filter 1.35s ease,letter-spacing 1.55s cubic-bezier(.2,.8,.3,1);
-  transition-delay:calc(var(--r, 0) * 155ms)}
+.anim{opacity:0;transform:translateY(28px);
+  transition:opacity 1.6s ease,transform 1.8s cubic-bezier(.2,.8,.3,1),
+             filter 1.6s ease,letter-spacing 1.9s cubic-bezier(.2,.8,.3,1);
+  transition-delay:calc(var(--r, 0) * 175ms)}
 .anim.visto{opacity:1;transform:none}
 .anim.abre{transform:none;letter-spacing:.62em}
 .anim.abre.visto{letter-spacing:.4em}
-.anim.difumina{transform:none;filter:blur(8px)}
+.anim.difumina{transform:none;filter:blur(9px)}
 .anim.difumina.visto{filter:blur(0)}
-.anim.crece{transform:scale(.94)}
+.anim.crece{transform:scale(.93)}
 .anim.crece.visto{transform:scale(1)}
+.anim.sube{transform:translateY(40px) scale(.97)}
+.anim.sube.visto{transform:none}
+
+/* El inicio se revela cuando se abren las puertas, no antes: se espera
+   con la clase .espera y entra más pausado que el resto */
+#inicio .anim{transition-duration:1.9s,2.1s,1.9s,2.2s;
+  transition-delay:calc(var(--r, 0) * 265ms)}
+#inicio .anim.crece{transform:scale(.9)}
+#inicio .lema{filter:blur(11px)}
+#inicio .lema.visto{filter:blur(0)}
 
 /* ── Separador elegante ── */
 .separador{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto}
@@ -330,24 +340,6 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
   10%{opacity:1}
   86%{opacity:1}
   100%{opacity:0;transform:translate3d(var(--deriva,4vw),118vh,0) rotate(var(--giro,300deg))}
-}
-/* Ráfaga: sale disparado del costado y la gravedad lo va venciendo */
-.petalo.rafaga{top:auto;bottom:var(--desde,42%)}
-@keyframes rafaga-i{
-  0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg)}
-  8%{opacity:1}
-  22%{transform:translate3d(calc(var(--empuje,26vw) * .55),-7vh,0) rotate(90deg)}
-  45%{transform:translate3d(calc(var(--empuje,26vw) * .85),-2vh,0) rotate(180deg)}
-  86%{opacity:1}
-  100%{opacity:0;transform:translate3d(var(--empuje,26vw),62vh,0) rotate(var(--giro,340deg))}
-}
-@keyframes rafaga-d{
-  0%{opacity:0;transform:translate3d(0,0,0) rotate(0deg)}
-  8%{opacity:1}
-  22%{transform:translate3d(calc(var(--empuje,26vw) * -.55),-7vh,0) rotate(-90deg)}
-  45%{transform:translate3d(calc(var(--empuje,26vw) * -.85),-2vh,0) rotate(-180deg)}
-  86%{opacity:1}
-  100%{opacity:0;transform:translate3d(calc(var(--empuje,26vw) * -1),62vh,0) rotate(var(--giro,340deg))}
 }
 
 /* ==========================================================================
@@ -647,11 +639,11 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
     <div class="lugares">
       <div class="lugar anim" style="--r:2">
         <svg class="icono-sec chico" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 14V7l5-4.5L13 7v7z"/><path d="M8 2.6V.9M6.7 5.3h2.6M8 9v3M6.6 10.4h2.8"/></svg>
-        <p class="rotulo">Ceremonia religiosa</p>
-        <p class="hora">4:00 pm</p>
+        <p class="rotulo anim" style="--r:2">Ceremonia religiosa</p>
+        <p class="hora anim" style="--r:3">4:00 pm</p>
         <p class="sede">Catedral de Toluca</p>
         <p class="dir">Catedral de San José · Centro<br>Toluca de Lerdo, Méx.</p>
-        <a class="boton" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Catedral%20de%20Toluca%20San%20Jos%C3%A9">
+        <a class="boton anim sube" style="--r:4" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=Catedral%20de%20Toluca%20San%20Jos%C3%A9">
           <svg width="11" height="14" viewBox="0 0 12 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 14s5-5.1 5-8.4A5 5 0 001 5.6C1 8.9 6 14 6 14Z"/><circle cx="6" cy="5.6" r="1.8"/></svg>
           Cómo llegar
         </a>
@@ -659,11 +651,11 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
       <div class="raya"></div>
       <div class="lugar anim" style="--r:3">
         <svg class="icono-sec chico" width="30" height="30" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 2h8l-1 4a3 3 0 01-6 0z"/><path d="M8 9v4M5.6 13.4h4.8"/></svg>
-        <p class="rotulo">Recepción</p>
-        <p class="hora">6:00 pm</p>
+        <p class="rotulo anim" style="--r:3">Recepción</p>
+        <p class="hora anim" style="--r:4">6:00 pm</p>
         <p class="sede">Salón HILDA</p>
         <p class="dir">Salón de Fiestas y Eventos Sociales<br>Toluca, Méx.</p>
-        <a class="boton" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=HILDA%20Sal%C3%B3n%20de%20Fiestas%20y%20Eventos%20Sociales%20Toluca">
+        <a class="boton anim sube" style="--r:5" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=HILDA%20Sal%C3%B3n%20de%20Fiestas%20y%20Eventos%20Sociales%20Toluca">
           <svg width="11" height="14" viewBox="0 0 12 15" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M6 14s5-5.1 5-8.4A5 5 0 001 5.6C1 8.9 6 14 6 14Z"/><circle cx="6" cy="5.6" r="1.8"/></svg>
           Cómo llegar
         </a>
@@ -686,7 +678,7 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
     <p class="rotulo anim" style="--r:1">Vestimenta</p>
     <p class="etiqueta anim" style="--r:2">Formal</p>
     <div class="filete anim" style="--r:3"><i></i></div>
-    <p class="anim" style="--r:4">Les pedimos con cariño reservar el blanco para la novia y evitar el color rojo. Tu estilo también forma parte de esta historia.</p>
+    <p class="anim difumina" style="--r:4">Les pedimos con cariño reservar el blanco para la novia y evitar el color rojo. Tu estilo también forma parte de esta historia.</p>
   </div>
 </section>
 
@@ -704,17 +696,17 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
     <p class="rotulo anim" style="--r:1">Asistencia</p>
     <h2 class="anim" style="--r:2">Te esperamos</h2>
     <p class="anim" style="--r:3">Saber que vienes nos ayuda a cuidar cada detalle. Te agradecemos confirmar antes del 15 de octubre de 2026.</p>
-    <div class="forma anim" style="--r:4">
-      <label class="campo"><input type="text" id="nombre" placeholder="Nombre y apellido" autocomplete="name"></label>
-      <label class="campo"><select id="pases">
+    <div class="forma">
+      <label class="campo anim sube" style="--r:3"><input type="text" id="nombre" placeholder="Nombre y apellido" autocomplete="name"></label>
+      <label class="campo anim sube" style="--r:4"><select id="pases">
         <option value="">¿Cuántos asisten?</option>
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
       </select></label>
-      <button class="boton solido" id="enviar">
+      <button class="boton solido anim sube" style="--r:5" id="enviar">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 00-6.9 12L0 16l4.1-1.1A8 8 0 108 0zm4.6 11.3c-.2.6-1.1 1.1-1.6 1.1-.4 0-.9.2-3.1-.7-2.6-1.1-4.2-3.8-4.4-4-.1-.2-1-1.4-1-2.6s.6-1.8.9-2.1c.2-.2.5-.3.6-.3h.5c.2 0 .4 0 .5.4l.8 1.9c.1.1.1.3 0 .5l-.3.4-.3.3c-.1.1-.2.2 0 .5.2.3.7 1.2 1.6 2 1.1.9 1.9 1.2 2.2 1.4.2.1.4.1.5-.1l.7-.8c.2-.2.3-.2.5-.1l1.8.9c.2.1.4.2.4.3v.8z"/></svg>
         Confirmar por WhatsApp
       </button>
-      <p class="aviso">Tu presencia es nuestro mejor regalo.</p>
+      <p class="aviso anim" style="--r:6">Tu presencia es nuestro mejor regalo.</p>
     </div>
   </div>
 </section>
@@ -722,9 +714,9 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
 </main>
 
 <footer>
-  <img class="logo-pie anim crece" src="assets/img/logo_white.png" alt="Vanessa y Manuel">
-  <small class="anim abre">14 · Noviembre · 2026</small>
-  <p class="gracias anim difumina">Gracias por ser parte de nuestra historia.</p>
+  <img class="logo-pie anim crece" style="--r:0" src="assets/img/logo_white.png" alt="Vanessa y Manuel">
+  <small class="anim abre" style="--r:1">14 · Noviembre · 2026</small>
+  <p class="gracias anim difumina" style="--r:2">Gracias por ser parte de nuestra historia.</p>
 </footer>
 
 <script>
@@ -805,6 +797,7 @@ function abrir(){
     escena.classList.add("fuera");
     cuerpo.classList.remove("sin-scroll");
     cuerpo.classList.add("dentro");
+    revelarInicio();
   });
   sonar();
 }
@@ -943,61 +936,59 @@ var ojo = new IntersectionObserver(function(entradas){
     if (e.isIntersecting){ e.target.classList.add("visto"); ojo.unobserve(e.target); }
   });
 }, {threshold:0, rootMargin:"0px 0px -4% 0px"});
-Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){ ojo.observe(el); });
+Array.prototype.forEach.call(document.querySelectorAll(".anim"), function(el){
+  /* los del inicio esperan a que se abran las puertas */
+  if (!el.closest("#inicio")) ojo.observe(el);
+});
+function revelarInicio(){
+  Array.prototype.forEach.call(document.querySelectorAll("#inicio .anim"), function(el){
+    el.classList.add("visto");
+  });
+}
 
 /* ---------- Pétalos: solo en el inicio ---------------------------------
-   Caen en racimos de tres (nunca sueltos y parejos, que es lo que delata
-   un efecto) y de vez en cuando sale una ráfaga del costado que la
-   gravedad va venciendo.
+   Caen en racimos de 3 o 4, juntos pero nunca alineados ni al mismo ritmo,
+   que es lo que delata un efecto.
+   MEMORIA: se crea un número fijo de elementos y sus animaciones son
+   infinitas, así que nada se acumula ni se queda en memoria al salir de
+   cuadro. Además se pausan cuando el inicio deja de verse.
    ------------------------------------------------------------------------ */
 (function(){
   if (lento) return;
   var zona = document.getElementById("inicio");
   var fuentes = ["petal_01","petal_02","petal_03"];
-  function nuevo(){
-    var im = document.createElement("img");
-    im.className = "petalo"; im.alt = "";
-    im.src = "assets/img/" + fuentes[Math.floor(Math.random()*3)] + ".png";
-    zona.appendChild(im);
-    return im;
-  }
 
-  /* cinco racimos de tres, repartidos con peso hacia las orillas */
   for (var g = 0; g < 5; g++){
     var orilla = g < 3;
     var base = orilla
       ? (g % 2 === 0 ? 3 + Math.random()*16 : 80 + Math.random()*16)
       : 32 + Math.random()*36;
     var arranque = -Math.random()*26;
-    for (var k = 0; k < 3; k++){
-      var im = nuevo();
-      im.style.left = Math.max(1, Math.min(95, base + (Math.random()*9 - 4.5))).toFixed(1) + "%";
-      im.style.width = (orilla ? 17 + Math.random()*11 : 12 + Math.random()*7).toFixed(0) + "px";
-      im.style.setProperty("--deriva", (Math.random()*8 - 3.5).toFixed(1) + "vw");
-      im.style.setProperty("--giro", Math.round(200 + Math.random()*260) + "deg");
+    var cuantos = 3 + Math.round(Math.random());     /* 3 o 4 por racimo */
+
+    for (var k = 0; k < cuantos; k++){
+      var im = document.createElement("img");
+      im.className = "petalo"; im.alt = "";
+      im.src = "assets/img/" + fuentes[Math.floor(Math.random()*3)] + ".png";
+      im.style.left = Math.max(1, Math.min(94, base + (Math.random()*11 - 5.5))).toFixed(1) + "%";
+      im.style.width = (orilla ? 22 + Math.random()*13 : 15 + Math.random()*8).toFixed(0) + "px";
+      im.style.setProperty("--deriva", (Math.random()*9 - 4).toFixed(1) + "vw");
+      im.style.setProperty("--giro", Math.round(200 + Math.random()*280) + "deg");
       im.style.animationName = "caer";
-      im.style.animationDuration = (16 + Math.random()*13).toFixed(1) + "s";
-      /* el racimo arranca junto pero cada pétalo baja a su ritmo */
-      im.style.animationDelay = (arranque + k * (.5 + Math.random()*1.6)).toFixed(1) + "s";
+      im.style.animationDuration = (15 + Math.random()*14).toFixed(1) + "s";
+      /* salen casi juntos pero cada uno cae a su ritmo */
+      im.style.animationDelay = (arranque + k * (.4 + Math.random()*1.9)).toFixed(1) + "s";
       if (k === 1) im.classList.add("delante");
+      zona.appendChild(im);
     }
   }
 
-  /* cuatro ráfagas laterales, espaciadas para que sean esporádicas */
-  for (var r = 0; r < 4; r++){
-    var izq = r % 2 === 0;
-    var im2 = nuevo();
-    im2.classList.add("rafaga");
-    im2.style[izq ? "left" : "right"] = (-3 - Math.random()*3).toFixed(1) + "%";
-    im2.style.setProperty("--desde", (26 + Math.random()*34).toFixed(0) + "%");
-    im2.style.setProperty("--empuje", (22 + Math.random()*16).toFixed(0) + "vw");
-    im2.style.setProperty("--giro", Math.round(260 + Math.random()*240) + "deg");
-    im2.style.width = (15 + Math.random()*9).toFixed(0) + "px";
-    im2.style.animationName = izq ? "rafaga-i" : "rafaga-d";
-    im2.style.animationDuration = (9 + Math.random()*5).toFixed(1) + "s";
-    im2.style.animationDelay = (-Math.random()*30 - r*7).toFixed(1) + "s";
-    if (r % 2) im2.classList.add("delante");
-  }
+  /* fuera de cuadro no gastan nada */
+  var petalos = zona.querySelectorAll(".petalo");
+  new IntersectionObserver(function(e){
+    var corre = e[0].isIntersecting ? "running" : "paused";
+    Array.prototype.forEach.call(petalos, function(p){ p.style.animationPlayState = corre; });
+  }, {threshold:0}).observe(zona);
 })();
 
 /* ---------- Parallax suave en los fondos ---------- */
