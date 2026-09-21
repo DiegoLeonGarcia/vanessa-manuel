@@ -290,8 +290,10 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
    Las columnas van de arriba a abajo completas (se recortan a lo ancho,
    nunca a lo alto) y el contenido lleva un margen que las respeta.
    ========================================================================== */
+/* 100svh y NO 100dvh: dvh cambia cuando Safari esconde su barra al hacer
+   scroll, y eso reescalaba el paisaje y las columnas */
 #inicio{position:relative;overflow:hidden;
-  min-height:100svh;min-height:100dvh;
+  min-height:100svh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;
   padding:clamp(5rem,12vh,7rem) 0 clamp(2rem,5vh,3rem)}
@@ -313,13 +315,11 @@ body.dentro .btn-menu,body.dentro .musica{opacity:1;pointer-events:auto;transiti
 #inicio .baja{position:relative;z-index:3}
 .antetitulo{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(11px,3.1vw,14px);letter-spacing:.36em;text-transform:uppercase;
-  color:#65705A;margin:0 0 1.4rem;
-  text-shadow:0 0 12px rgba(255,253,248,.9),0 0 24px rgba(255,253,248,.7)}
+  color:#65705A;margin:0 0 1.4rem}
 .logo-novios{width:min(56vw,290px);max-height:30svh;object-fit:contain;margin:0 auto 1.5rem}
 .fecha{font-family:"Montserrat",sans-serif;font-weight:600;
   font-size:clamp(10px,2.8vw,13.5px);letter-spacing:.22em;text-transform:uppercase;
-  white-space:nowrap;color:#65705A;margin:0;
-  text-shadow:0 0 12px rgba(255,253,248,.9),0 0 24px rgba(255,253,248,.7)}
+  white-space:nowrap;color:#65705A;margin:0}
 .lema{font-family:"Cormorant Garamond",serif;font-weight:600;font-style:italic;
   white-space:nowrap;
   font-size:clamp(16px,4.7vw,29px);line-height:1.5;color:var(--tinta);
@@ -440,11 +440,21 @@ p{margin:0 0 1.3rem;font-weight:500;font-size:clamp(17px,4.6vw,20px);line-height
   color:var(--laton-2);line-height:1;margin:0 0 .5rem}
 
 .forma{max-width:400px;margin:2rem auto 0}
-.campo{display:block;margin:0 0 .9rem}
-.campo input,.campo select{width:100%;padding:1rem 1.3rem;
-  border:1.5px solid rgba(110,122,94,.4);border-radius:999px;
-  background:rgba(255,253,249,.88);color:var(--tinta);font-family:"Montserrat",sans-serif;
-  font-weight:500;font-size:16px;appearance:none;text-align:center}
+.campo{display:block;position:relative;margin:0 0 16px}
+.campo .icono-campo{position:absolute;left:20px;top:50%;transform:translateY(-50%);
+  color:var(--oliva);pointer-events:none;z-index:2}
+.campo input,.campo select{width:100%;padding:16px 20px 16px 50px;
+  border:1.5px solid rgba(110,122,94,.42);border-radius:999px;
+  background:rgba(255,255,255,.74);
+  font-family:"Montserrat",sans-serif;font-size:16px;font-weight:400;color:var(--tinta);
+  text-align:left;appearance:none;-webkit-appearance:none}
+.campo input::placeholder{color:#8C9481;opacity:1}
+.campo select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236E7A5E' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 20px center}
+/* mientras no se elija nada, el texto del select tiene el mismo tono que el placeholder */
+.campo select:invalid{color:#8C9481}
+.campo select option{color:var(--tinta)}
 .campo input:focus,.campo select:focus{outline:none;border-color:var(--oliva)}
 .aviso{font-size:clamp(17px,4.6vw,20px);font-weight:500;color:var(--tinta-70);
   font-style:italic;margin:1.6rem 0 0}
@@ -732,9 +742,14 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
     <h2 class="anim" style="--r:2">Te esperamos</h2>
     <p class="anim" style="--r:3">Saber que vienes nos ayuda a cuidar cada detalle. Te agradecemos confirmar antes del 15 de octubre de 2026.</p>
     <div class="forma">
-      <label class="campo anim sube" style="--r:3"><input type="text" id="nombre" placeholder="Nombre y apellido" autocomplete="name"></label>
-      <label class="campo anim sube" style="--r:4"><select id="pases">
-        <option value="">¿Cuántos asisten?</option>
+      <label class="campo anim sube" style="--r:3">
+        <svg class="icono-campo" width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3.1"/><path d="M2.9 15.5c0-2.9 2.8-4.5 6.1-4.5s6.1 1.6 6.1 4.5"/></svg>
+        <input type="text" id="nombre" placeholder="Nombre y apellido" autocomplete="name">
+      </label>
+      <label class="campo anim sube" style="--r:4">
+        <svg class="icono-campo" width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="2.7"/><path d="M1.7 15.3c0-2.7 2.4-4.2 5.3-4.2s5.3 1.5 5.3 4.2M13 4.3a2.5 2.5 0 010 4.8M14.4 11.4c1.4.5 2.3 1.6 2.3 3.3"/></svg>
+        <select id="pases" required>
+        <option value="" disabled selected>¿Cuántos asisten?</option>
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
       </select></label>
       <button class="boton solido anim sube" style="--r:5" id="enviar">
@@ -1037,6 +1052,29 @@ function revelarInicio(){
     var corre = e[0].isIntersecting ? "running" : "paused";
     Array.prototype.forEach.call(petalos, function(p){ p.style.animationPlayState = corre; });
   }, {threshold:0}).observe(zona);
+})();
+
+/* ---------- Parallax en las tres imágenes grandes (el inicio no se mueve) ---------- */
+(function(){
+  if (lento) return;
+  var fotos = Array.prototype.slice.call(document.querySelectorAll(".escena-foto .fondo"));
+  fotos.forEach(function(el){ el.style.willChange = "transform"; });
+  var pendiente = false;
+  function mover(){
+    pendiente = false;
+    var alto = window.innerHeight;
+    fotos.forEach(function(el){
+      var r = el.parentElement.getBoundingClientRect();
+      if (r.bottom < -80 || r.top > alto + 80) return;
+      var centro = r.top + r.height/2 - alto/2;
+      el.style.transform = "translate3d(0," + (-centro * .20).toFixed(1) + "px,0) scale(1.30)";
+    });
+  }
+  window.addEventListener("scroll", function(){
+    if (!pendiente){ pendiente = true; requestAnimationFrame(mover); }
+  }, {passive:true});
+  window.addEventListener("resize", mover, {passive:true});
+  mover();
 })();
 
 /* ---------- WhatsApp ---------- */
