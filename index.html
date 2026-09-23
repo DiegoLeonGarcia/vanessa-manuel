@@ -164,6 +164,28 @@ body.con-invitado .llamada{top:calc(var(--oy) + var(--imgH) * .818)}
 .para-lugares{font-family:"Montserrat",sans-serif;font-weight:500;
   font-size:clamp(10px,2.7vw,12px);letter-spacing:.18em;text-transform:uppercase;
   color:#65705A;margin-top:.4rem!important}
+/* Sí o no: dos opciones, no un formulario */
+.eleccion{display:flex;gap:12px;margin:0 0 16px}
+.opcion{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;
+  padding:15px 12px;border-radius:999px;cursor:pointer;
+  border:1.5px solid rgba(110,122,94,.42);background:rgba(255,255,255,.74);
+  font-family:"Montserrat",sans-serif;font-weight:600;
+  font-size:clamp(11.5px,3vw,12.5px);letter-spacing:.08em;color:var(--oliva);
+  transition:background .35s ease,color .35s ease,border-color .35s ease,
+             transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .35s ease}
+.opcion svg{flex:none;opacity:.55;transition:opacity .35s ease,transform .4s cubic-bezier(.2,.8,.3,1)}
+@media (hover:hover){.opcion:hover{border-color:var(--laton);transform:translateY(-2px)}}
+.opcion[aria-checked="true"]{background:var(--oliva);border-color:var(--oliva);color:#FBF7F0;
+  box-shadow:0 8px 20px rgba(110,122,94,.28)}
+.opcion[aria-checked="true"] svg{opacity:1;transform:scale(1.1)}
+.opcion:focus-visible{outline:2px solid var(--laton);outline-offset:3px}
+@media (max-width:360px){.eleccion{flex-direction:column}}
+
+/* el número de asistentes se despliega solo si hace falta */
+#campo-pases{overflow:hidden;max-height:0;opacity:0;margin-bottom:0;
+  transition:max-height .5s cubic-bezier(.2,.8,.3,1),opacity .4s ease,margin-bottom .5s ease}
+#campo-pases.abierto{max-height:120px;opacity:1;margin-bottom:16px}
+
 .nota-campo{margin:2px 0 14px;font-family:"Montserrat",sans-serif;font-weight:500;
   font-size:13px;line-height:1.6;color:#65705A;text-align:center}
 
@@ -811,9 +833,19 @@ footer .gracias{margin:1.9rem 0 0;font-style:italic;font-weight:500;
         <svg class="icono-campo" width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="6" r="3.1"/><path d="M2.9 15.5c0-2.9 2.8-4.5 6.1-4.5s6.1 1.6 6.1 4.5"/></svg>
         <input type="text" id="nombre" placeholder="Nombre y apellido" autocomplete="name">
       </label>
-      <label class="campo anim sube" style="--r:4">
+      <div class="eleccion anim sube" style="--r:4" id="eleccion" role="radiogroup" aria-label="¿Nos acompañas?">
+        <button type="button" class="opcion" id="op-si" role="radio" aria-checked="false">
+          <svg width="15" height="15" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 9.4l4.2 4.2L15.4 5"/></svg>
+          Sí, ahí estaré
+        </button>
+        <button type="button" class="opcion" id="op-no" role="radio" aria-checked="false">
+          <svg width="15" height="15" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4.4 4.4l9.2 9.2M13.6 4.4l-9.2 9.2"/></svg>
+          No podré asistir
+        </button>
+      </div>
+      <label class="campo" id="campo-pases">
         <svg class="icono-campo" width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="2.7"/><path d="M1.7 15.3c0-2.7 2.4-4.2 5.3-4.2s5.3 1.5 5.3 4.2M13 4.3a2.5 2.5 0 010 4.8M14.4 11.4c1.4.5 2.3 1.6 2.3 3.3"/></svg>
-        <select id="pases" required>
+        <select id="pases">
         <option value="" disabled selected>¿Cuántos asisten?</option>
         <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
       </select></label>
@@ -878,11 +910,9 @@ if (lugares){
   }
   sel.value = String(lugares);
 
-  var nota = document.getElementById("nota-lugares");
-  nota.textContent = lugares === 1
+  document.getElementById("nota-lugares").textContent = lugares === 1
     ? "Apartamos 1 lugar para ti."
     : "Apartamos " + lugares + " lugares para ti.";
-  nota.hidden = false;
 }
 
 /* ---------- LAS PUERTAS -------------------------------------------------
@@ -1169,13 +1199,52 @@ function revelarInicio(){
   mover();
 })();
 
+/* ---------- Confirmación: primero sí o no ------------------------------
+   El número de asistentes solo se despliega cuando de verdad hace falta:
+   si contestó que sí Y su enlace trae más de un lugar apartado.
+   ------------------------------------------------------------------------ */
+var respuesta = null;
+var opSi = document.getElementById("op-si"),
+    opNo = document.getElementById("op-no"),
+    campoPases = document.getElementById("campo-pases"),
+    notaLugares = document.getElementById("nota-lugares");
+
+function elegir(v){
+  respuesta = v;
+  opSi.setAttribute("aria-checked", v === "si" ? "true" : "false");
+  opNo.setAttribute("aria-checked", v === "no" ? "true" : "false");
+  var pedirNumero = (v === "si" && lugares > 1);
+  campoPases.classList.toggle("abierto", pedirNumero);
+  notaLugares.hidden = !pedirNumero;
+}
+opSi.addEventListener("click", function(){ elegir("si"); });
+opNo.addEventListener("click", function(){ elegir("no"); });
+[opSi, opNo].forEach(function(b){
+  b.addEventListener("keydown", function(e){
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+      e.preventDefault(); elegir(respuesta === "si" ? "no" : "si");
+      (respuesta === "si" ? opSi : opNo).focus();
+    }
+  });
+});
+
 /* ---------- WhatsApp ---------- */
 document.getElementById("enviar").addEventListener("click", function(){
-  var n = document.getElementById("nombre").value.trim(),
-      q = document.getElementById("pases").value;
-  if (!n){ document.getElementById("nombre").focus(); return; }
-  var m = "¡Hola! Confirmo la asistencia de " + n + " a la boda de Vanessa y Manuel"
-        + (q ? " (" + q + (q==="1" ? " persona)." : " personas).") : ".");
+  var campoNombre = document.getElementById("nombre");
+  var n = campoNombre.value.trim();
+  if (!n){ campoNombre.focus(); return; }
+  if (!respuesta){ opSi.focus(); return; }
+
+  var m;
+  if (respuesta === "no"){
+    m = "¡Hola! Soy " + n + ". Lamento no poder acompañarlos en su boda. "
+      + "Les deseo un día precioso y toda la felicidad del mundo.";
+  } else {
+    var q = (lugares > 1) ? document.getElementById("pases").value : "";
+    if (lugares === 1) q = "1";
+    m = "¡Hola! Confirmo la asistencia de " + n + " a la boda de Vanessa y Manuel"
+      + (q ? " (" + q + (q === "1" ? " persona)." : " personas).") : ".");
+  }
   window.open("https://wa.me/524181011391?text=" + encodeURIComponent(m), "_blank", "noopener");
 });
 
